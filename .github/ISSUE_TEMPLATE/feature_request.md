@@ -14,5 +14,6 @@ A clear and concise description of what the problem is. Ex. I'm always frustrate
 If any, please describe  how it should be implemented
 
 **ACs**
-[ ] 
-[ ]
+Specific conditions or requirements that must be met
+- [ ] 
+- [ ]
