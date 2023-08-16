@@ -21,8 +21,10 @@ export default function SearchBar() {
         type="search"
         id="search"
         label="Search"
-        // sx={{ width: 500 }}
       />
+      <Button className="upload-btn" variant="contained" component="label">
+        Search
+      </Button>
     </Container>
   </div>
   );
