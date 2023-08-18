@@ -1,10 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import LeftSideDrawer from "./components/Navigation/LeftSideDrawer";
 
 function App() {
   return (
-    <div className="App">
-    </div>
+    <>
+      <LeftSideDrawer />
+    </>
   );
 }
 
