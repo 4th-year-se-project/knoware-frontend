@@ -22,3 +22,13 @@
 .search-field {
   width: 100%;
 }
+
+.header-app-bar {
+  background-color: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.header-search-input {
+  width: 500px;
+}

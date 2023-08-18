@@ -3,7 +3,7 @@ import { Container, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 
-export default function SearchBar() {
+const SearchBar = () => {
   return (
     <div className="App">
     <div className="knoware-title">
@@ -29,3 +29,5 @@ export default function SearchBar() {
   </div>
   );
 }
+
+export default SearchBar;
