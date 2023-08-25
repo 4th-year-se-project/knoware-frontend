@@ -22,3 +22,7 @@
 .search-field {
   width: 100%;
 }
+
+.page-content-container {
+  height: 100vh !important;
+}
