@@ -181,7 +181,6 @@ export default function LeftSideDrawer() {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        nwkjnejdnedndeodsos
       </Main>
     </Box>
   );
