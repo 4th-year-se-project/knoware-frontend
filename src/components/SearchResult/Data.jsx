@@ -2,6 +2,9 @@ let myGraph = {
   nodes: [
     { id: "n1", label: "Data Analytics" },
     { id: "n2", label: "Introduction to Data Analytics" },
+    { id: "n2.1", label: "Pdf" },
+    { id: "n2.2", label: "You tube" },
+
     { id: "n3", label: "Getting to Know Your Data" },
     { id: "n4", label: "Knowledge Representation" },
     { id: "n5", label: "Association Rule Mining" },
@@ -26,6 +29,9 @@ let myGraph = {
   ],
   edges: [
     { id: "e1", source: "n1", target: "n2", label: "SEES" },
+    { id: "e1.1", source: "n2", target: "n2.1", label: "SEES" },
+    { id: "e1.2", source: "n2", target: "n2.2", label: "SEES" },
+
     { id: "e2", source: "n1", target: "n3", label: "SEES" },
     { id: "e3", source: "n1", target: "n4", label: "SEES" },
     { id: "e4", source: "n1", target: "n5", label: "SEES" },
