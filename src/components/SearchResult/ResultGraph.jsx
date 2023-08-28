@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Sigma,RandomizeNodePositions,RelativeSize } from "react-sigma";
 import myGraph from "./Data";
+import NodeDetails from "./NodeDetails";
 // import NodeDetailsDrawer from './NodeDetailsDrawer';
 
 const ResultGraph = () => {
@@ -10,6 +11,11 @@ const ResultGraph = () => {
     defaultNodeSize: 50,
     drawEdges: true,
     clone: false,
+    minNodeSize: 10,
+    maxNodeSize: 30,
+    forceAtlas2Settings: {
+      edgeWeightInfluence: 0.1,
+    },
   };
 
   const [selectedNode, setSelectedNode] = React.useState(null);
@@ -23,7 +29,7 @@ const ResultGraph = () => {
   };
 
   return (
-    <>
+    <div className="graph-container">
       <Sigma
         graph={myGraph}
         settings={nodeSettings}
@@ -32,15 +38,8 @@ const ResultGraph = () => {
         <RelativeSize initialSize={50} />
         <RandomizeNodePositions />
       </Sigma>
-
-      {/* Node Details Drawer */}
-      {/* {isDrawerOpen && (
-        <NodeDetailsDrawer
-          selectedNode={selectedNode}
-          onClose={() => setIsDrawerOpen(false)}
-        />
-      )} */}
-    </>
+      <NodeDetails />
+    </div>
   );
 };
 
