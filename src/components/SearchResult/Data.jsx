@@ -60,6 +60,7 @@ let myGraph = {
     { id: "n17", label: "Query Optimization" },
     { id: "n18", label: "Transaction Management" },
   ],
+  
   edges: [
     { id: "e1", source: "n1", target: "n2", label: "SEES" },
     { id: "e1.1", source: "n2", target: "n2.1", label: "SEES" },
