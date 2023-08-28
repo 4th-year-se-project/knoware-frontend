@@ -18,14 +18,16 @@ const ResultGraph = () => {
     },
   };
 
-  const [selectedNode, setSelectedNode] = React.useState(null);
+  const [selectedNode, setSelectedNode] = React.useState();
+  const [title, setTitle] = React.useState()
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const handleNodeClick = (event) => {
-    const nodeId = event.data.node.id;
-    setSelectedNode(nodeId);
+    const nodeDescription = event.data.node.description;
+    const nodeTitle = event.data.node.title;
+    setSelectedNode(nodeDescription);
+    setTitle(nodeTitle);
     setIsDrawerOpen(true);
-    alert(nodeId)
   };
 
   return (
@@ -34,11 +36,13 @@ const ResultGraph = () => {
         graph={myGraph}
         settings={nodeSettings}
         onClickNode={handleNodeClick} 
+        className="result-graph"
       >
         <RelativeSize initialSize={50} />
         <RandomizeNodePositions />
       </Sigma>
-      <NodeDetails />
+
+      <NodeDetails handleNodeClick={selectedNode} />
     </div>
   );
 };
