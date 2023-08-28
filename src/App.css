@@ -23,6 +23,12 @@
   width: 100%;
 }
 
-.page-content-container {
-  height: 100vh !important;
+.header-app-bar {
+  background-color: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.header-search-input {
+  width: 500px;
 }
