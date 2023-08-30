@@ -1,13 +1,11 @@
 import * as React from "react";
-import { Sigma,RandomizeNodePositions,RelativeSize } from "react-sigma";
+import { Sigma, RandomizeNodePositions, RelativeSize, NOverlap } from "react-sigma";
 import myGraph from "./Data";
 import NodeDetails from "./NodeDetails";
-// import NodeDetailsDrawer from './NodeDetailsDrawer';
 
 const ResultGraph = () => {
   const nodeSettings = {
-    defaultNodeBorderColor: "#000",
-    defaultNodeColor: "#1976d2",
+    // defaultNodeColor: "#1976d2",
     defaultNodeSize: 50,
     drawEdges: true,
     clone: false,
@@ -33,13 +31,16 @@ const ResultGraph = () => {
   return (
     <div className="graph-container">
       <Sigma
+        renderer="canvas"
         graph={myGraph}
         settings={nodeSettings}
         onClickNode={handleNodeClick} 
         className="result-graph"
       >
         <RelativeSize initialSize={50} />
-        <RandomizeNodePositions />
+        {/* <RandomizeNodePositions /> */}
+        <NOverlap gridSize={10} maxIterations={100}/>
+
       </Sigma>
 
       <NodeDetails handleNodeClick={selectedNode} />
