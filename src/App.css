@@ -48,3 +48,38 @@
   border-left: 1px solid grey;
   padding-left: 12px;
 }
+
+.card-container {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #F4F4F4 !important;
+  cursor: pointer;
+}
+
+.resulting-title{
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.hash-tag-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.hash-tag {
+  margin: 10px;
+  background-color: #5552FF;
+  padding: 5px;
+  border-radius: 6px;
+  font-size: 10px;
+}
+
+.resource-icon {
+  font-size: larger !important;
+}

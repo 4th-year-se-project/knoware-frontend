@@ -24,6 +24,7 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import SchoolIcon from '@mui/icons-material/School';
 import topics from "./TopicList";
 import ResultGraph from "../SearchResult/ResultGraph";
+import ResultContent from "../SearchResult/ResultContent/ResultContent";
 
 const drawerWidth = 240;
 
@@ -182,7 +183,7 @@ export default function LeftSideDrawer() {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        <ResultGraph />
+        <ResultContent />
       </Main>
     </Box>
   );
