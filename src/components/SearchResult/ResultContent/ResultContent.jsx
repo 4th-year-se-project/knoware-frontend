@@ -1,6 +1,7 @@
 import { Box, Card } from "@mui/material";
 import React from "react";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import { Height } from "@mui/icons-material";
 
 const ResultContent = () => {
   return (
@@ -18,7 +19,7 @@ const ResultContent = () => {
               <Box className="hash-tag">HCI</Box>
             </div>
           </div>
-          <PictureAsPdfIcon className="resource-icon"/>
+          <PictureAsPdfIcon className="resource-icon" style={{fontSize: '50px'}}/>
         </div>
         <h5 className="resulting-title">
           Course {">"} {"....."} {">"} Sub topic
