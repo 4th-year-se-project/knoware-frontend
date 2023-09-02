@@ -13,6 +13,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import logo from "./knoware.png";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -109,15 +110,16 @@ export default function Header() {
             noWrap
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
+            style={{marginTop: "auto", marginBottom: "auto", display: "flex"}}
           >
-            KnoWare
+            <img src={logo} alt="logo" />
           </Typography>
           <Search className="header-search">
             <SearchIconWrapper>
-              <SearchIcon />
+              <SearchIcon style={{color: "#5552FF"}}/>
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Search term"
               inputProps={{ "aria-label": "search" }}
               className="header-search-input"
             />
@@ -126,24 +128,25 @@ export default function Header() {
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
               size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={3} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
               edge="end"
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
-              color="inherit"
+              color="default"
             >
               <AccountCircle />
             </IconButton>
+            <Typography
+              variant="h7"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } }}
+              color="black"
+              className="header-username"
+            >
+              John Doe
+            </Typography>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -151,7 +154,7 @@ export default function Header() {
               aria-label="show more"
               aria-haspopup="true"
               onClick={handleMobileMenuOpen}
-              color="inherit"
+              color="default"
             >
               <MoreIcon />
             </IconButton>
@@ -159,6 +162,6 @@ export default function Header() {
         </Toolbar>
       </AppBar>
       {renderMenu}
-      </>
+    </>
   );
 }
