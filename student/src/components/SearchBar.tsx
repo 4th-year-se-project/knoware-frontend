@@ -5,7 +5,11 @@ import { Group, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
-const SearchBar = () => {
+type Props = {
+  width?: number;
+};
+
+const SearchBar = (props: Props) => {
   const navigate = useNavigate();
 
   const handleSearchClick = useCallback(() => {
@@ -25,7 +29,9 @@ const SearchBar = () => {
             },
           },
         })}
-        className="border-purple-500 focus:border-purple-700 mt-4 w-96"
+        className={`border-purple-500 focus:border-purple-700 mt-4 ${
+          props.width ? `w-[${props.width}px]` : "w-96"
+        }`}
         rightSection={
           <IconSearch
             size="1.2rem"
