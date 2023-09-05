@@ -24,7 +24,7 @@ const Home = (props: Props) => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <img src={Logo} alt="logo" width={300} />
+      <img src={Logo} alt="logo" width={400} />
 
       {isUploading ? (
         <>
@@ -52,7 +52,7 @@ const Home = (props: Props) => {
             className="opacity-70 mt-4 cursor-pointer"
             onClick={open}
           />
-          <SearchBar />
+          <SearchBar width={450} />
         </Group>
       )}
 
