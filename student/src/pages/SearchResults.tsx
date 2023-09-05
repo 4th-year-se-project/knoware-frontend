@@ -8,9 +8,6 @@ import {
   Text,
   Skeleton,
 } from "@mantine/core";
-import Logo from "../assets/images/logo.svg";
-import SearchBar from "../components/SearchBar";
-import DefaultAvatar from "../assets/images/avatar.jpg";
 import { ResourceCard } from "../components";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
