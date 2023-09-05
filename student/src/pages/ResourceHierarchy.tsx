@@ -1,18 +1,8 @@
 import React, { useCallback } from "react";
 import { ResponsiveCirclePacking } from "@nivo/circle-packing";
-import {
-  AppShell,
-  Header,
-  Avatar,
-  Group,
-  Text,
-  Navbar,
-  Accordion,
-} from "@mantine/core";
-import SearchBar from "../components/SearchBar";
-import DefaultAvatar from "../assets/images/avatar.jpg";
+import { AppShell, Navbar, Accordion } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import Logo from "../assets/images/logo.svg";
+import HeaderBar from "../components/HeaderBar";
 
 type Props = {};
 
@@ -62,28 +52,7 @@ const ResourceHierarchy = (props: Props) => {
   return (
     <AppShell
       padding="md"
-      header={
-        <Header height={80} className="flex items-center justify-between px-40">
-          <div className="flex items-center">
-            <img
-              src={Logo}
-              alt="logo"
-              width={100}
-              className="cursor-pointer"
-              onClick={handleLogoClick}
-            />
-          </div>
-          <div className="flex-1 flex justify-center mb-4">
-            <SearchBar />
-          </div>
-          <Group className="flex items-center">
-            <Avatar src={DefaultAvatar} radius="xl" alt="it's me" />
-            <Text color="dimmed" size="sm">
-              John Doe
-            </Text>
-          </Group>
-        </Header>
-      }
+      header={<HeaderBar onLogoClick={handleLogoClick} />}
       navbar={
         <Navbar width={{ base: 300 }} height="full" p="md">
           <Accordion>
@@ -92,16 +61,18 @@ const ResourceHierarchy = (props: Props) => {
               <Accordion.Panel>
                 <Accordion>
                   <Accordion.Item value="customization">
-                    <Accordion.Control>Customization</Accordion.Control>
-                    <Accordion.Panel>
+                    <Accordion.Control className="text-md">
+                      Customization
+                    </Accordion.Control>
+                    <Accordion.Panel className="text-sm">
                       Colors, fonts, shadows and many other parts are
-                      customizable to fit your design needs
+                      customizable to not fit your design needs
                     </Accordion.Panel>
                   </Accordion.Item>
 
                   <Accordion.Item value="flexibility">
                     <Accordion.Control>Flexibility</Accordion.Control>
-                    <Accordion.Panel>
+                    <Accordion.Panel className="text-sm">
                       Configure components appearance and behavior with vast
                       amount of settings or overwrite any part of component
                       styles
@@ -112,7 +83,7 @@ const ResourceHierarchy = (props: Props) => {
                     <Accordion.Control>
                       No annoying focus ring
                     </Accordion.Control>
-                    <Accordion.Panel>
+                    <Accordion.Panel className="text-sm">
                       With new :focus-visible pseudo-class focus ring appears
                       only when user navigates with keyboard
                     </Accordion.Panel>
@@ -123,7 +94,7 @@ const ResourceHierarchy = (props: Props) => {
 
             <Accordion.Item value="flexibility">
               <Accordion.Control>Flexibility</Accordion.Control>
-              <Accordion.Panel>
+              <Accordion.Panel className="text-sm">
                 Configure components appearance and behavior with vast amount of
                 settings or overwrite any part of component styles
               </Accordion.Panel>
@@ -131,7 +102,7 @@ const ResourceHierarchy = (props: Props) => {
 
             <Accordion.Item value="focus-ring">
               <Accordion.Control>No annoying focus ring</Accordion.Control>
-              <Accordion.Panel>
+              <Accordion.Panel className="text-sm">
                 With new :focus-visible pseudo-class focus ring appears only
                 when user navigates with keyboard
               </Accordion.Panel>

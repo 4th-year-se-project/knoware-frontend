@@ -13,6 +13,7 @@ import SearchBar from "../components/SearchBar";
 import DefaultAvatar from "../assets/images/avatar.jpg";
 import { ResourceCard } from "../components";
 import { useNavigate } from "react-router-dom";
+import HeaderBar from "../components/HeaderBar";
 
 type Props = {};
 
@@ -26,28 +27,7 @@ const SearchResults = (props: Props) => {
   return (
     <AppShell
       padding="md"
-      header={
-        <Header height={80} className="flex items-center justify-between px-40">
-          <div className="flex items-center">
-            <img
-              src={Logo}
-              alt="logo"
-              width={100}
-              className="cursor-pointer"
-              onClick={handleLogoClick}
-            />
-          </div>
-          <div className="flex-1 flex justify-center mb-4">
-            <SearchBar />
-          </div>
-          <Group className="flex items-center">
-            <Avatar src={DefaultAvatar} radius="xl" alt="it's me" />
-            <Text color="dimmed" size="sm">
-              John Doe
-            </Text>
-          </Group>
-        </Header>
-      }
+      header={<HeaderBar onLogoClick={handleLogoClick} />}
       styles={(theme) => ({
         main: {
           backgroundColor:
