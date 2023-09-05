@@ -52,7 +52,7 @@ const Home = (props: Props) => {
             className="opacity-70 mt-4 cursor-pointer"
             onClick={open}
           />
-          <SearchBar width={450} />
+          <SearchBar long={true} />
         </Group>
       )}
 

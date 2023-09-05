@@ -6,7 +6,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
-  width?: number;
+  long?: boolean;
 };
 
 const SearchBar = (props: Props) => {
@@ -30,7 +30,7 @@ const SearchBar = (props: Props) => {
           },
         })}
         className={`border-purple-500 focus:border-purple-700 mt-4 ${
-          props.width ? `w-[${props.width}px]` : "w-96"
+          props.long ? "w-[450px]" : "w-96"
         }`}
         rightSection={
           <IconSearch
