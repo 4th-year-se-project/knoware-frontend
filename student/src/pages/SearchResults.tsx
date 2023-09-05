@@ -1,13 +1,5 @@
 import React, { useCallback } from "react";
-import {
-  AppShell,
-  Header,
-  Container,
-  Avatar,
-  Group,
-  Text,
-  Skeleton,
-} from "@mantine/core";
+import { AppShell, Container, Text, Skeleton } from "@mantine/core";
 import { ResourceCard } from "../components";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
