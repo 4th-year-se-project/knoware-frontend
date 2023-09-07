@@ -7,7 +7,11 @@ import {
   Breadcrumbs,
   Group,
 } from "@mantine/core";
-import { IconFileTypePdf, IconPresentation } from "@tabler/icons-react";
+import {
+  IconBrandYoutubeFilled,
+  IconFileTypePdf,
+  IconPresentation,
+} from "@tabler/icons-react";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -41,6 +45,8 @@ const ResourceCard = ({ title, topics, content, tags }: ResourceCardProps) => {
     icon = <IconFileTypePdf size={rem(40)} />;
   } else if (fileExtension === "ppt" || fileExtension === "pptx") {
     icon = <IconPresentation size={rem(40)} />;
+  } else {
+    icon = <IconBrandYoutubeFilled size={rem(40)} />;
   }
   return (
     <Card
