@@ -1,20 +1,45 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AppShell, Container, Text, Skeleton } from "@mantine/core";
 import { ResourceCard } from "../components";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
+import { search } from "../services/searchAPI";
 import { useSelector } from "react-redux/es/hooks/useSelector";
-import { RootState } from "../store";
 
 type Props = {};
 
 const SearchResults = (props: Props) => {
   const navigate = useNavigate();
-  const results = useSelector((state: RootState) => state.results.value);
+  const [results, setResults] = useState<any[]>([]);
+  const query = useSelector((state: any) => state.query.value);
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
     navigate("/");
   }, [navigate]);
+
+  // Function to perform the search and update results
+  const performSearch = async () => {
+    setResults([]);
+    console.log(query);
+    try {
+      const data = {
+        query: query,
+      };
+      // Perform your search logic here and update the results state
+      const response = await search(data); // Replace with your actual search logic
+
+      const newResults = response.data.results;
+
+      setResults(newResults);
+    } catch (error) {
+      console.error("Error performing search:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Call performSearch when the component mounts (on load)
+    performSearch();
+  }, [query]); // Empty dependency array means this effect runs once on mount
 
   return (
     <AppShell

@@ -1,41 +1,31 @@
-// SearchBar.js or SearchBar.tsx
-
 import React, { useCallback } from "react";
 import { Group, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import { search } from "../services/searchAPI";
 import { useDispatch } from "react-redux";
-import { setResults } from "../slices/searchResultsSlice";
+import { setQuery } from "../slices/querySlice";
 
 type Props = {
   long?: boolean;
+  initialQuery?: string;
 };
 
 const SearchBar = (props: Props) => {
   const navigate = useNavigate();
-  const [query, setQuery] = React.useState<string>("");
   const dispatch = useDispatch();
+  const [queryValue, setQueryValue] = React.useState("");
 
-  const handleSearchClick = useCallback(async () => {
-    try {
-      const data = {
-        query: query,
-      };
-      const results = await search(data);
-      dispatch(setResults(results.data.results));
-
-      navigate("/search-results");
-    } catch (error) {
-      console.error("Error searching for resources:", error);
-    }
-  }, [navigate, query]);
+  const handleSearchClick = () => {
+    dispatch(setQuery(queryValue));
+    navigate("/search-results");
+  };
 
   return (
     <Group className="flex items-center">
       <TextInput
         placeholder="Search for resources"
         radius="xl"
+        defaultValue={props.initialQuery}
         styles={() => ({
           input: {
             "&:focus-within": {
@@ -43,8 +33,15 @@ const SearchBar = (props: Props) => {
             },
           },
         })}
-        onChange={(event) => {
-          setQuery(event.currentTarget.value);
+        onInput={(event) => {
+          setQueryValue(event.currentTarget.value);
+          console.log("Query Value:", event.currentTarget.value);
+          console.log("Query Value 2:", queryValue);
+        }}
+        onKeyUp={(event) => {
+          if (event.key === "Enter") {
+            handleSearchClick();
+          }
         }}
         className={`border-purple-500 focus:border-purple-700 mt-4 ${
           props.long ? "w-[450px]" : "w-96"

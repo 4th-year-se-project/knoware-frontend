@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import resultsReducer from "./slices/searchResultsSlice";
+import queryReducer from "./slices/querySlice";
 
 export const store = configureStore({
   reducer: {
-    results: resultsReducer,
+    query: queryReducer,
   },
 });
 
