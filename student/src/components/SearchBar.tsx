@@ -35,8 +35,6 @@ const SearchBar = (props: Props) => {
         })}
         onInput={(event) => {
           setQueryValue(event.currentTarget.value);
-          console.log("Query Value:", event.currentTarget.value);
-          console.log("Query Value 2:", queryValue);
         }}
         onKeyUp={(event) => {
           if (event.key === "Enter") {

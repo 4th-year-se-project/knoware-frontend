@@ -17,7 +17,6 @@ const SearchResults = (props: Props) => {
     navigate("/");
   }, [navigate]);
 
-  // Function to perform the search and update results
   const performSearch = async () => {
     setResults([]);
     console.log(query);
@@ -25,8 +24,7 @@ const SearchResults = (props: Props) => {
       const data = {
         query: query,
       };
-      // Perform your search logic here and update the results state
-      const response = await search(data); // Replace with your actual search logic
+      const response = await search(data);
 
       const newResults = response.data.results;
 
@@ -37,7 +35,6 @@ const SearchResults = (props: Props) => {
   };
 
   useEffect(() => {
-    // Call performSearch when the component mounts (on load)
     performSearch();
   }, [query]); // Empty dependency array means this effect runs once on mount
 
