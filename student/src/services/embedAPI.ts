@@ -4,6 +4,13 @@ type YouTubeRequestBody = {
   video_url: string;
 };
 
+const endpointMapping: Record<string, string> = {
+  pdf: "embed_pdf",
+  docx: "embed_docx",
+  pptx: "embed_pptx",
+  audio: "embed_audio",
+};
+
 export const embedYoutube = async (
   data: YouTubeRequestBody
 ): Promise<AxiosResponse> => {
@@ -19,80 +26,30 @@ export const embedYoutube = async (
   }
 };
 
-export const embedPDF = async (file: File): Promise<AxiosResponse> => {
+export const embedFile = async (file: File): Promise<AxiosResponse> => {
   try {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await axios.post(
-      "http://localhost:8080/embed_pdf",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    return response;
-  } catch (error) {
-    // Handle errors here, e.g., log them or show an error message to the user
-    throw error;
-  }
-};
 
-export const embedDoc = async (file: File): Promise<AxiosResponse> => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await axios.post(
-      "http://localhost:8080/embed_docx",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    return response;
-  } catch (error) {
-    // Handle errors here, e.g., log them or show an error message to the user
-    throw error;
-  }
-};
+    // Get the file extension (e.g., "pdf", "docx", "pptx", "audio")
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
-export const embedPPT = async (file: File): Promise<AxiosResponse> => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await axios.post(
-      "http://localhost:8080/embed_pptx",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    return response;
-  } catch (error) {
-    // Handle errors here, e.g., log them or show an error message to the user
-    throw error;
-  }
-};
-
-export const embedAudio = async (file: File): Promise<AxiosResponse> => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await axios.post(
-      "http://localhost:8080/embed_audio",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    return response;
+    // Check if the file extension is supported
+    if (fileExtension && endpointMapping[fileExtension]) {
+      const endpoint = endpointMapping[fileExtension];
+      const response = await axios.post(
+        `http://localhost:8080/${endpoint}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response;
+    } else {
+      throw new Error("Unsupported file type");
+    }
   } catch (error) {
     // Handle errors here, e.g., log them or show an error message to the user
     throw error;
