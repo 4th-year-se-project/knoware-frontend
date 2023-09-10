@@ -8,7 +8,13 @@ const endpointMapping: Record<string, string> = {
   pdf: "embed_pdf",
   docx: "embed_docx",
   pptx: "embed_pptx",
-  audio: "embed_audio",
+  mp3: "embed_audio",
+  mp4: "embed_audio",
+  mpeg: "embed_audio",
+  mpga: "embed_audio",
+  m4a: "embed_audio",
+  wav: "embed_audio",
+  webm: "embed_audio",
 };
 
 export const embedYoutube = async (
@@ -31,10 +37,8 @@ export const embedFile = async (file: File): Promise<AxiosResponse> => {
     const formData = new FormData();
     formData.append("file", file);
 
-    // Get the file extension (e.g., "pdf", "docx", "pptx", "audio")
     const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
-    // Check if the file extension is supported
     if (fileExtension && endpointMapping[fileExtension]) {
       const endpoint = endpointMapping[fileExtension];
       const response = await axios.post(
