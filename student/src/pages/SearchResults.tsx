@@ -72,9 +72,9 @@ const SearchResults = (props: Props) => {
               <ResourceCard
                 key={result.doc_id}
                 title={result.title}
-                topics={[]}
+                topics={[result.course, result.topic, result.subtopic]}
                 content={result.content}
-                tags={[]}
+                tags={result.keywords}
               />
             ))}
       </Container>

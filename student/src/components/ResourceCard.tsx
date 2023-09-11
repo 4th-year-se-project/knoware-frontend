@@ -60,20 +60,20 @@ const ResourceCard = ({ title, topics, content, tags }: ResourceCardProps) => {
       <Group position="apart" mt="md">
         <div>
           <Text weight={500}>{title}</Text>
-          <Group mt={8} mb="xs">
-            {topics.map((topic, index) => (
-              <Badge key={index} color="indigo" variant="light">
-                {topic}
-              </Badge>
-            ))}
-          </Group>
         </div>
         {icon}
       </Group>
-      <Breadcrumbs separator="→" mt="xs" mb="md">
+      <Group mt={8} mb="xs">
         {tags.map((tag, index) => (
-          <Text key={index} color="indigo.7">
+          <Badge key={index} color="indigo" variant="light">
             {tag}
+          </Badge>
+        ))}
+      </Group>
+      <Breadcrumbs separator="→" mt="lg" mb="md">
+        {topics.map((topic, index) => (
+          <Text key={index} color="indigo.7">
+            {topic}
           </Text>
         ))}
       </Breadcrumbs>
