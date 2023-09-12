@@ -1,27 +1,31 @@
-// SearchBar.js or SearchBar.tsx
-
 import React, { useCallback } from "react";
 import { Group, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setQuery } from "../slices/querySlice";
 
 type Props = {
   long?: boolean;
+  initialQuery?: string;
 };
 
 const SearchBar = (props: Props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [queryValue, setQueryValue] = React.useState("");
 
-  const handleSearchClick = useCallback(() => {
-    console.log("Search clicked");
+  const handleSearchClick = () => {
+    dispatch(setQuery(queryValue));
     navigate("/search-results");
-  }, [navigate]);
+  };
 
   return (
     <Group className="flex items-center">
       <TextInput
         placeholder="Search for resources"
         radius="xl"
+        defaultValue={props.initialQuery}
         styles={() => ({
           input: {
             "&:focus-within": {
@@ -29,6 +33,14 @@ const SearchBar = (props: Props) => {
             },
           },
         })}
+        onInput={(event) => {
+          setQueryValue(event.currentTarget.value);
+        }}
+        onKeyUp={(event) => {
+          if (event.key === "Enter") {
+            handleSearchClick();
+          }
+        }}
         className={`border-purple-500 focus:border-purple-700 mt-4 ${
           props.long ? "w-[450px]" : "w-96"
         }`}

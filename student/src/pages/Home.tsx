@@ -13,6 +13,8 @@ import {
 import { IconFilePlus, IconUpload } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import SearchBar from "../components/SearchBar";
+import { embedFile, embedYoutube } from "../services/embedAPI";
+import EmbedAlert from "../components/EmbedAlert";
 
 type Props = {};
 
@@ -21,11 +23,52 @@ const Home = (props: Props) => {
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState<string>("");
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(true);
+  const [alert, setAlert] = useState<boolean>(false);
+
+  const uploadYoutube = async () => {
+    try {
+      const data = {
+        video_url: url,
+      };
+      const embed = await embedYoutube(data);
+      setIsUploading(false);
+      setSuccess(true);
+      setAlert(true);
+    } catch (error) {
+      console.error("Error embedding YouTube video:", error);
+      setIsUploading(false);
+      setSuccess(false);
+      setAlert(true);
+    }
+  };
+
+  const uploadFile = async () => {
+    try {
+      if (file) {
+        // Check if file is not null
+        const embed = await embedFile(file);
+        setIsUploading(false);
+        setSuccess(true);
+        setAlert(true);
+      } else {
+        // Handle the case where file is null (e.g., show an error message)
+        console.error("No file selected for embedding.");
+        setIsUploading(false);
+        setSuccess(false);
+        setAlert(true);
+      }
+    } catch (error) {
+      console.error("Error embedding file:", error);
+      setIsUploading(false);
+      setSuccess(false);
+      setAlert(true);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <img src={Logo} alt="logo" width={400} />
-
       {isUploading ? (
         <>
           <Progress
@@ -55,7 +98,6 @@ const Home = (props: Props) => {
           <SearchBar long={true} />
         </Group>
       )}
-
       <Modal opened={opened} onClose={close} title="Add a resource" centered>
         <Tabs color="indigo" defaultValue="upload">
           <Tabs.List>
@@ -73,6 +115,7 @@ const Home = (props: Props) => {
             <button
               onClick={() => {
                 setIsUploading(true);
+                uploadFile();
                 close();
               }}
               className="mt-4  bg-[#5452FF] hover:bg-[#4744f9] text-white font-semibold py-2 px-4 rounded-md w-full"
@@ -90,6 +133,7 @@ const Home = (props: Props) => {
             <button
               onClick={() => {
                 setIsUploading(true);
+                uploadYoutube();
                 close();
               }}
               className="mt-4 bg-[#5452FF] hover:bg-[#4744f9] text-white font-semibold py-2 px-4 rounded-md w-full"
@@ -99,6 +143,8 @@ const Home = (props: Props) => {
           </Tabs.Panel>
         </Tabs>
       </Modal>
+      {alert &&
+        EmbedAlert({ success: success, onClose: () => setAlert(false) })}
     </div>
   );
 };

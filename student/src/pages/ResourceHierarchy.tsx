@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { ResponsiveCirclePacking } from "@nivo/circle-packing";
-import { AppShell, Navbar, Accordion } from "@mantine/core";
+import { AppShell, Navbar, Accordion, Group } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
 
