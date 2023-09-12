@@ -1,17 +1,45 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ResponsiveCirclePacking } from "@nivo/circle-packing";
-import { AppShell, Navbar, Accordion, Group } from "@mantine/core";
+import {
+  AppShell,
+  Navbar,
+  Accordion,
+  Group,
+  ScrollArea,
+  List,
+} from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
+import { getCourseDetails } from "../services/resourceAPI";
 
 type Props = {};
 
 const ResourceHierarchy = (props: Props) => {
+  const [courseData, setCourseData] = useState<any>({
+    topics: [], // Provide an initial empty array or an appropriate initial structure
+  });
   const navigate = useNavigate();
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
     navigate("/");
   }, [navigate]);
+
+  const getCourseData = async () => {
+    setCourseData({});
+    try {
+      const response = await getCourseDetails(1);
+      const data = await response.data;
+      console.log(data);
+      setCourseData(data);
+    } catch (error) {
+      console.error("Error getting course data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCourseData();
+  }, []); // Empty dependency array means this effect runs once on mount
+
   const data = {
     name: "root",
     children: [
@@ -55,59 +83,51 @@ const ResourceHierarchy = (props: Props) => {
       header={<HeaderBar onLogoClick={handleLogoClick} />}
       navbar={
         <Navbar width={{ base: 300 }} height="full" p="md">
-          <Accordion>
-            <Accordion.Item value="customization">
-              <Accordion.Control>Customization</Accordion.Control>
-              <Accordion.Panel>
-                <Accordion>
-                  <Accordion.Item value="customization">
-                    <Accordion.Control className="text-md">
-                      Customization
+          <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
+            {courseData.topics && courseData.topics.length > 0 ? ( // Check if courseData is available
+              <Accordion variant="contained">
+                {courseData.topics.map((topic: any, index: number) => (
+                  <Accordion.Item key={index} value={topic.topic_name}>
+                    <Accordion.Control className="text-sm">
+                      {topic.topic_name}
                     </Accordion.Control>
-                    <Accordion.Panel className="text-sm">
-                      Colors, fonts, shadows and many other parts are
-                      customizable to not fit your design needs
+                    <Accordion.Panel>
+                      {topic.subtopics.map((subtopic: any, index: number) => (
+                        <Accordion variant="separated">
+                          <Accordion.Item
+                            key={index}
+                            value={subtopic.subtopic_name}
+                          >
+                            <Accordion.Control className="text-sm">
+                              {subtopic.subtopic_name}
+                            </Accordion.Control>
+                            <Accordion.Panel>
+                              <List>
+                                {subtopic.documents.map(
+                                  (document: any, index: number) => (
+                                    <List.Item
+                                      key={index}
+                                      className="text-xs text-blue-700 cursor-pointer"
+                                      onClick={() => {}}
+                                    >
+                                      {document.document_name}
+                                    </List.Item>
+                                  )
+                                )}
+                              </List>
+                            </Accordion.Panel>
+                          </Accordion.Item>
+                        </Accordion>
+                      ))}
                     </Accordion.Panel>
                   </Accordion.Item>
-
-                  <Accordion.Item value="flexibility">
-                    <Accordion.Control>Flexibility</Accordion.Control>
-                    <Accordion.Panel className="text-sm">
-                      Configure components appearance and behavior with vast
-                      amount of settings or overwrite any part of component
-                      styles
-                    </Accordion.Panel>
-                  </Accordion.Item>
-
-                  <Accordion.Item value="focus-ring">
-                    <Accordion.Control>
-                      No annoying focus ring
-                    </Accordion.Control>
-                    <Accordion.Panel className="text-sm">
-                      With new :focus-visible pseudo-class focus ring appears
-                      only when user navigates with keyboard
-                    </Accordion.Panel>
-                  </Accordion.Item>
-                </Accordion>
-              </Accordion.Panel>
-            </Accordion.Item>
-
-            <Accordion.Item value="flexibility">
-              <Accordion.Control>Flexibility</Accordion.Control>
-              <Accordion.Panel className="text-sm">
-                Configure components appearance and behavior with vast amount of
-                settings or overwrite any part of component styles
-              </Accordion.Panel>
-            </Accordion.Item>
-
-            <Accordion.Item value="focus-ring">
-              <Accordion.Control>No annoying focus ring</Accordion.Control>
-              <Accordion.Panel className="text-sm">
-                With new :focus-visible pseudo-class focus ring appears only
-                when user navigates with keyboard
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
+                ))}
+              </Accordion>
+            ) : (
+              // You can show a loading indicator here if needed
+              <div>Loading...</div>
+            )}
+          </Navbar.Section>
         </Navbar>
       }
       styles={(theme) => ({
