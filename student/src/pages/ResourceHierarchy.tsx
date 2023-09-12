@@ -18,19 +18,52 @@ const ResourceHierarchy = (props: Props) => {
   const [courseData, setCourseData] = useState<any>({
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
+  const [zoomedId, setZoomedId] = useState<string | null>(null);
+  const [chartData, setChartData] = useState<any>({}); // [1
   const navigate = useNavigate();
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
     navigate("/");
   }, [navigate]);
 
+  const randomColorSet = Array.from({ length: 50 }, () => {
+    const r = Math.floor(Math.random() * 256); // Random red component (0-255)
+    const g = Math.floor(Math.random() * 256); // Random green component (0-255)
+    const b = Math.floor(Math.random() * 256); // Random blue component (0-255)
+    return `rgb(${r},${g},${b})`;
+  });
+
   const getCourseData = async () => {
     setCourseData({});
     try {
-      const response = await getCourseDetails(1);
-      const data = await response.data;
-      console.log(data);
-      setCourseData(data);
+      // Get the docID from session storage
+      const docID = sessionStorage.getItem("docID");
+
+      // Check if docID is null or undefined
+      if (docID !== null && docID !== undefined) {
+        const response = await getCourseDetails(parseInt(docID, 10));
+        const data = await response.data;
+        console.log(data);
+        setCourseData(data);
+        setChartData({
+          name: "root",
+          children: courseData.topics.map((topic: any) => ({
+            name: topic.topic_name,
+            children: topic.subtopics.map(
+              (subtopic: any, subtopicIndex: number) => ({
+                name: subtopic.subtopic_name,
+                children: subtopic.documents.map((document: any) => ({
+                  name: document.document_name,
+                  value: document.similarity_score,
+                  color: randomColorSet[subtopicIndex], // Assign colors based on the index
+                })),
+              })
+            ),
+          })),
+        });
+      } else {
+        console.error("docID is null or undefined");
+      }
     } catch (error) {
       console.error("Error getting course data:", error);
     }
@@ -39,36 +72,6 @@ const ResourceHierarchy = (props: Props) => {
   useEffect(() => {
     getCourseData();
   }, []); // Empty dependency array means this effect runs once on mount
-
-  const data = {
-    name: "root",
-    children: [
-      { name: "Resource.pdf", value: 10 },
-      { name: "Resource2.ppt", value: 20 },
-      {
-        name: "HCI Evaluation",
-        children: [
-          { name: "Resource3.mp3", value: 5 },
-          { name: "Resource4.mp4", value: 8 },
-        ],
-      },
-    ],
-  };
-
-  // Define a custom color scheme based on the 'color' property in your data
-  const customColorScheme = () => {
-    // Generate random values for red and green channels
-    const randomRed = Math.floor(Math.random() * 256);
-    const randomGreen = Math.floor(Math.random() * 256);
-
-    // Set the blue channel to 0
-    const randomBlue = 0;
-
-    // Create a CSS color string in the format "rgb(r, g, b)"
-    const color = `rgb(${randomRed}, ${randomGreen}, ${randomBlue})`;
-
-    return color;
-  };
 
   // Define the onClick handler
   const handleLeafClick = (node: any) => {
@@ -124,7 +127,6 @@ const ResourceHierarchy = (props: Props) => {
                 ))}
               </Accordion>
             ) : (
-              // You can show a loading indicator here if needed
               <div>Loading...</div>
             )}
           </Navbar.Section>
@@ -140,15 +142,21 @@ const ResourceHierarchy = (props: Props) => {
       })}
     >
       <ResponsiveCirclePacking
-        data={data}
+        data={chartData}
         margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
         id="name"
         value="value"
-        colors={customColorScheme}
+        colors={(node: any) => node.data.color} // Use the color property from the data
         childColor={{ from: "color", modifiers: [["darker", 0.3]] }}
         leavesOnly
         enableLabels
-        onClick={handleLeafClick} // Attach the onClick handler to the chart
+        // onClick={handleLeafClick} // Attach the onClick handler to the chart
+        zoomedId={zoomedId}
+        motionConfig="slow"
+        onClick={(node) => {
+          setZoomedId(zoomedId === node.id ? null : node.id);
+          console.log(node);
+        }}
       />
     </AppShell>
   );

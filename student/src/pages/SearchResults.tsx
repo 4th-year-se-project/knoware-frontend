@@ -71,6 +71,7 @@ const SearchResults = (props: Props) => {
             results.map((result, index) => (
               <ResourceCard
                 key={result.doc_id}
+                id={result.doc_id}
                 title={result.title}
                 topics={[result.course, result.topic, result.subtopic]}
                 content={result.content}

@@ -16,6 +16,7 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 type ResourceCardProps = {
+  id: number;
   title: string;
   topics: string[];
   content: string;
@@ -30,11 +31,18 @@ const getFileExtension = (title: string): string | null => {
   return null;
 };
 
-const ResourceCard = ({ title, topics, content, tags }: ResourceCardProps) => {
+const ResourceCard = ({
+  title,
+  topics,
+  content,
+  tags,
+  id,
+}: ResourceCardProps) => {
   const navigate = useNavigate();
 
   const handleResultClick = useCallback(() => {
     console.log("Search clicked");
+    sessionStorage.setItem("docID", id.toString());
     navigate("/resource-hierarchy");
   }, [navigate]);
 
