@@ -33,7 +33,7 @@ function RightSideBar() {
   };
   return (
     <div
-      className={`absolute right-0 h-100 border-l border-gray-200 transition-width duration-400 ease-in-out bg-white min-h-full ${
+      className={`absolute right-0 h-100 border-l border-gray-200 transition-width duration-400 ease-in-out bg-white min-h-full z-10 ${
         collapsed ? "w-12" : "w-80"
       }`}
     >
