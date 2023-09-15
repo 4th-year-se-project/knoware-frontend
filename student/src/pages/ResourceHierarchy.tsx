@@ -9,11 +9,14 @@ import { RightSideBar } from "../components";
 type Props = {};
 
 const ResourceHierarchy = (props: Props) => {
+  const docID = sessionStorage.getItem("docID");
   const [courseData, setCourseData] = useState<any>({
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
   const [zoomedId, setZoomedId] = useState<string | null>(null);
-  const [chartData, setChartData] = useState<any>({}); // [1
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [selectedDocId, setSelectedDocId] = useState<any>(docID);
+  const [chartData, setChartData] = useState<any>({});
   const navigate = useNavigate();
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
@@ -30,23 +33,20 @@ const ResourceHierarchy = (props: Props) => {
   const getCourseData = async () => {
     setCourseData({});
     try {
-      // Get the docID from session storage
-      const docID = sessionStorage.getItem("docID");
-
       // Check if docID is null or undefined
       if (docID !== null && docID !== undefined) {
         const response = await getCourseDetails(parseInt(docID, 10));
         const data = await response.data;
-        console.log(data);
         setCourseData(data);
-        setChartData({
+        const newChartData = {
           name: "root",
-          children: courseData.topics.map((topic: any) => ({
+          children: data.topics.map((topic: any) => ({
             name: topic.topic_name,
             children: topic.subtopics.map(
               (subtopic: any, subtopicIndex: number) => ({
                 name: subtopic.subtopic_name,
                 children: subtopic.documents.map((document: any) => ({
+                  doc_id: document.document_id,
                   name: document.document_name,
                   value: document.similarity_score,
                   color: randomColorSet[subtopicIndex], // Assign colors based on the index
@@ -54,7 +54,8 @@ const ResourceHierarchy = (props: Props) => {
               })
             ),
           })),
-        });
+        };
+        setChartData(newChartData);
       } else {
         console.error("docID is null or undefined");
       }
@@ -74,9 +75,16 @@ const ResourceHierarchy = (props: Props) => {
     }
   };
 
+  const handleChildValueChange = (value: any) => {
+    setIsCollapsed(value);
+  };
+
   return (
     <>
-      <RightSideBar />
+      <RightSideBar
+        docID={selectedDocId}
+        onValueChange={handleChildValueChange}
+      />
       <AppShell
         padding="md"
         header={<HeaderBar onLogoClick={handleLogoClick} />}
@@ -139,19 +147,25 @@ const ResourceHierarchy = (props: Props) => {
       >
         <ResponsiveCirclePacking
           data={chartData}
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          margin={{
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: isCollapsed ? 0 : -300,
+          }}
           id="name"
           value="value"
           colors={(node: any) => node.data.color} // Use the color property from the data
           childColor={{ from: "color", modifiers: [["darker", 0.3]] }}
           leavesOnly
           enableLabels
-          // onClick={handleLeafClick} // Attach the onClick handler to the chart
+          //onClick={handleLeafClick} // Attach the onClick handler to the chart
           zoomedId={zoomedId}
           motionConfig="slow"
           onClick={(node) => {
+            console.log(node.data.doc_id);
             setZoomedId(zoomedId === node.id ? null : node.id);
-            console.log(node);
+            setSelectedDocId(node.data.doc_id);
           }}
         />
       </AppShell>
