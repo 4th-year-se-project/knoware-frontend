@@ -4,7 +4,7 @@ import { useSelector } from "react-redux/es/hooks/useSelector";
 import { getResourceInfo } from "../services/resourceAPI";
 import { useDisclosure } from "@mantine/hooks";
 
-const RightSideBar = ({ docID, onValueChange }: any) => {
+const ResourceBar = ({ docID, onValueChange }: any) => {
   const [collapsed, setCollapsed] = useState(false);
   const query = useSelector((state: any) => state.query.value);
   const [resourceInfo, setResourceInfo] = useState<any>({});
@@ -74,4 +74,4 @@ const RightSideBar = ({ docID, onValueChange }: any) => {
     </div>
   );
 };
-export default RightSideBar;
+export default ResourceBar;

@@ -4,7 +4,7 @@ import { AppShell, Navbar, Accordion, ScrollArea, List } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
 import { getCourseDetails } from "../services/resourceAPI";
-import { RightSideBar } from "../components";
+import { ResourceBar } from "../components";
 
 type Props = {};
 
@@ -81,7 +81,7 @@ const ResourceHierarchy = (props: Props) => {
 
   return (
     <>
-      <RightSideBar
+      <ResourceBar
         docID={selectedDocId}
         onValueChange={handleChildValueChange}
       />

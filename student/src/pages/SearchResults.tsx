@@ -73,7 +73,7 @@ const SearchResults = (props: Props) => {
                 key={result.doc_id}
                 id={result.doc_id}
                 title={result.title}
-                topics={[result.course, result.topic, result.subtopic]}
+                topics={[result.subtopic, result.topic, result.course]}
                 content={result.content}
                 tags={result.keywords}
               />
