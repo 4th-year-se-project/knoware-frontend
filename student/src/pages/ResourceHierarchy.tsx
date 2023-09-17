@@ -23,7 +23,7 @@ const ResourceHierarchy = (props: Props) => {
     navigate("/");
   }, [navigate]);
 
-  const randomColorSet = Array.from({ length: 50 }, () => {
+  const randomColorSet = Array.from({ length: 200 }, () => {
     const r = Math.floor(Math.random() * 256); // Random red component (0-255)
     const g = Math.floor(Math.random() * 256); // Random green component (0-255)
     const b = Math.floor(Math.random() * 256); // Random blue component (0-255)
@@ -40,7 +40,7 @@ const ResourceHierarchy = (props: Props) => {
         setCourseData(data);
         const newChartData = {
           name: "root",
-          children: data.topics.map((topic: any) => ({
+          children: data.topics.map((topic: any, topicIndex: number) => ({
             name: topic.topic_name,
             children: topic.subtopics.map(
               (subtopic: any, subtopicIndex: number) => ({
@@ -49,7 +49,10 @@ const ResourceHierarchy = (props: Props) => {
                   doc_id: document.document_id,
                   name: document.document_name,
                   value: document.similarity_score,
-                  color: randomColorSet[subtopicIndex], // Assign colors based on the index
+                  color:
+                    randomColorSet[
+                      topicIndex * data.topics.length + subtopicIndex
+                    ], // Assign colors based on the topic and subtopic index
                 })),
               })
             ),
@@ -85,6 +88,7 @@ const ResourceHierarchy = (props: Props) => {
         docID={selectedDocId}
         onValueChange={handleChildValueChange}
       />
+
       <AppShell
         padding="md"
         header={<HeaderBar onLogoClick={handleLogoClick} />}

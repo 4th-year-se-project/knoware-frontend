@@ -44,6 +44,7 @@ const ResourceBar = ({ docID, onValueChange }: any) => {
         opened={opened}
         onClick={handleCollapsedChange}
       />
+
       <div className={`mt-28 p-4 ${collapsed ? "hidden" : "block"}`}>
         <Group>
           <p className="font-normal text-sm mb-2">{resourceInfo.title}</p>
