@@ -14,7 +14,6 @@ const ResourceHierarchy = (props: Props) => {
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
   const [zoomedId, setZoomedId] = useState<string | null>(null);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [selectedDocId, setSelectedDocId] = useState<any>(docID);
   const [chartData, setChartData] = useState<any>({});
   const navigate = useNavigate();
@@ -78,17 +77,8 @@ const ResourceHierarchy = (props: Props) => {
     }
   };
 
-  const handleChildValueChange = (value: any) => {
-    setIsCollapsed(value);
-  };
-
   return (
     <>
-      <ResourceBar
-        docID={selectedDocId}
-        onValueChange={handleChildValueChange}
-      />
-
       <AppShell
         padding="md"
         header={<HeaderBar onLogoClick={handleLogoClick} />}
@@ -140,6 +130,7 @@ const ResourceHierarchy = (props: Props) => {
             </Navbar.Section>
           </Navbar>
         }
+        aside={<ResourceBar docID={selectedDocId} />}
         styles={(theme) => ({
           main: {
             backgroundColor:
@@ -155,7 +146,7 @@ const ResourceHierarchy = (props: Props) => {
             top: 20,
             right: 20,
             bottom: 20,
-            left: isCollapsed ? 0 : -300,
+            left: 0,
           }}
           id="name"
           value="value"
