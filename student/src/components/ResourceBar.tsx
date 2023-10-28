@@ -3,6 +3,14 @@ import { Badge, Group, Burger, Aside, ScrollArea } from "@mantine/core";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { getResourceInfo } from "../services/resourceAPI";
 import { useDisclosure } from "@mantine/hooks";
+import { Button } from "@mantine/core";
+import {
+  IconPhoto,
+  IconDownload,
+  IconArrowRight,
+  IconEdit,
+  IconTrash,
+} from "@tabler/icons-react";
 
 const ResourceBar = ({ docID }: any) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -70,6 +78,23 @@ const ResourceBar = ({ docID }: any) => {
             <p className="text-xs/[17px] font-normal text-gray-500  whitespace-normal break-words overflow-hidden">
               {resourceInfo.content}
             </p>
+          </Group>
+          <Group mt={16}>
+            <Button
+              size="xs"
+              leftIcon={<IconEdit size={14} />}
+              variant="default"
+            >
+              Edit Topic
+            </Button>
+            <Button
+              size="xs"
+              leftIcon={<IconTrash size={14} />}
+              variant="light"
+              color="red"
+            >
+              Delete Resource
+            </Button>
           </Group>
         </div>
       </Aside.Section>
