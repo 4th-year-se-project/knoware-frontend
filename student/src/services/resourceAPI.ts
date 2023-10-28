@@ -42,3 +42,18 @@ export const deleteResource = async (
     throw error;
   }
 };
+
+export const editTopic = async (
+  documentId: number,
+  topic: string
+): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.put(
+      `http://localhost:8080/topic?document_id=${documentId}&topic=${topic}`
+    );
+    return response;
+  } catch (error) {
+    // Handle any errors here
+    throw error;
+  }
+};

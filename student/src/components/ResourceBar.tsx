@@ -4,13 +4,8 @@ import { useSelector } from "react-redux/es/hooks/useSelector";
 import { getResourceInfo } from "../services/resourceAPI";
 import { useDisclosure } from "@mantine/hooks";
 import { Button } from "@mantine/core";
-import {
-  IconPhoto,
-  IconDownload,
-  IconArrowRight,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { editTopic, deleteResource } from "../services/resourceAPI";
 
 const ResourceBar = ({ docID }: any) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -39,6 +34,18 @@ const ResourceBar = ({ docID }: any) => {
     toggle();
     setCollapsed(!collapsed);
   };
+
+  const handleResourceDelete = async () => {
+    try {
+      const response = await deleteResource(parseInt(docID, 10));
+      console.log(response);
+    } catch (error) {
+      console.error("Error deleting resource:", error);
+    }
+  };
+
+  const handleTopicEdit = async () => {};
+
   return (
     <Aside
       className="transition-all duration-500 ease-in-out "
@@ -84,6 +91,7 @@ const ResourceBar = ({ docID }: any) => {
               size="xs"
               leftIcon={<IconEdit size={14} />}
               variant="default"
+              onClick={handleTopicEdit}
             >
               Edit Topic
             </Button>
@@ -92,6 +100,7 @@ const ResourceBar = ({ docID }: any) => {
               leftIcon={<IconTrash size={14} />}
               variant="light"
               color="red"
+              onClick={handleResourceDelete}
             >
               Delete Resource
             </Button>
