@@ -28,3 +28,17 @@ export const getResourceInfo = async (
     throw error;
   }
 };
+
+export const deleteResource = async (
+  documentId: number
+): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.delete(
+      `http://localhost:8080/resource?document_id=${documentId}`
+    );
+    return response;
+  } catch (error) {
+    // Handle any errors here
+    throw error;
+  }
+};
