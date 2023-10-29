@@ -9,7 +9,6 @@ import { ResourceBar } from "../components";
 type Props = {};
 
 const ResourceHierarchy = (props: Props) => {
-  //const docID = sessionStorage.getItem("docID");
   const [courseData, setCourseData] = useState<any>({
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
