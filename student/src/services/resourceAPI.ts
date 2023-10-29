@@ -57,3 +57,22 @@ export const editTopic = async (
     throw error;
   }
 };
+
+export const getPdf = async (
+  filename: string,
+): Promise<AxiosResponse> => {
+  console.log(filename)
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/getPdf?filename=${filename}`,   {
+        responseType: 'blob', // Set response type to blob
+      }
+    );
+    return response;
+  } catch (error) {
+    // Handle any errors here
+    throw error;
+  }
+};
+
+

@@ -13,7 +13,7 @@ import { getResourceInfo } from "../services/resourceAPI";
 import { useDisclosure } from "@mantine/hooks";
 import { Button } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { editTopic, deleteResource } from "../services/resourceAPI";
+import { editTopic, deleteResource, getPdf } from "../services/resourceAPI";
 
 const ResourceBar = ({ docID, topics }: any) => {
   const [topicModalOpened, { open, close }] = useDisclosure(false);
@@ -74,6 +74,22 @@ const ResourceBar = ({ docID, topics }: any) => {
     }
   };
 
+  const openPdfInNewWindow = async () => {
+    try {
+      // Fetch the PDF using the getPdf function
+      const response = await getPdf(resourceInfo.title);
+
+      // Create a blob URL for the PDF content
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      // Open the PDF in a new window
+      window.open(pdfUrl, "_blank");
+    } catch (error) {
+      console.error("Error fetching or opening PDF:", error);
+    }
+  };
+
   return (
     <Aside
       className="transition-all duration-500 ease-in-out "
@@ -101,11 +117,30 @@ const ResourceBar = ({ docID, topics }: any) => {
             ))}
           </Group>
 
-          <Group mt={20}>
+          {/* <Group mt={20}>
             <p>Open in:</p>
-            <button className="bg-black text-white px-3 py-1 rounded-md text-sm min-w-32">
+            <button className="bg-black text-white px-3 py-1 rounded-md text-sm min-w-32" onClick={openPdfInNewWindow}>
               PDF
             </button>
+          </Group> */}
+
+          <Group mt={20}>
+            <p>Open in:</p>
+            {resourceInfo.title?.endsWith(".pdf") ? (
+              <button
+                className="bg-black text-white px-3 py-1 rounded-md text-sm min-w-32"
+                onClick={openPdfInNewWindow}
+              >
+                PDF
+              </button>
+            ) : resourceInfo.link ? (
+              <button
+                className="bg-black text-white px-3 py-1 rounded-md text-sm min-w-32"
+                onClick={() => window.open(resourceInfo.link, "_blank")}
+              >
+                YouTube
+              </button>
+            ) : null}
           </Group>
 
           <Group mt={20}>
@@ -143,12 +178,12 @@ const ResourceBar = ({ docID, topics }: any) => {
       >
         <Select
           label="Select a Topic"
-          placeholder={resourceInfo.topics[resourceInfo.topics.length - 1]}
+          placeholder={resourceInfo.topics?.[resourceInfo.topics?.length - 1]}
           data={topics.map((topic: any) => ({ label: topic, value: topic }))}
           value={
             selectedTopic
               ? selectedTopic
-              : resourceInfo.topics[resourceInfo.topics.length - 1]
+              : resourceInfo.topics?.[resourceInfo.topics?.length - 1]
           }
           onChange={(value) => setSelectedTopic(value || "")}
           mb="sm"
