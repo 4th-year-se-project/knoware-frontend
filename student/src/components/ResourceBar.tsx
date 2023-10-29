@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { Badge, Group, Burger, Aside, ScrollArea } from "@mantine/core";
+import {
+  Badge,
+  Group,
+  Burger,
+  Aside,
+  ScrollArea,
+  Modal,
+  Select,
+} from "@mantine/core";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { getResourceInfo } from "../services/resourceAPI";
 import { useDisclosure } from "@mantine/hooks";
@@ -7,8 +15,10 @@ import { Button } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { editTopic, deleteResource } from "../services/resourceAPI";
 
-const ResourceBar = ({ docID }: any) => {
+const ResourceBar = ({ docID, topics }: any) => {
+  const [topicModalOpened, { open, close }] = useDisclosure(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState(""); // State for selected topic
   const query = useSelector((state: any) => state.query.value);
   const [resourceInfo, setResourceInfo] = useState<any>({});
   const [opened, { toggle }] = useDisclosure(true);
@@ -39,12 +49,30 @@ const ResourceBar = ({ docID }: any) => {
     try {
       const response = await deleteResource(parseInt(docID, 10));
       console.log(response);
+      if (response.status === 200) {
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Error deleting resource:", error);
     }
   };
 
-  const handleTopicEdit = async () => {};
+  const handleTopicEdit = () => {
+    open();
+  };
+
+  const editTopicName = async () => {
+    try {
+      const response = await editTopic(parseInt(docID, 10), selectedTopic);
+      console.log(response);
+      setSelectedTopic("");
+      if (response.status === 200) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error editing topic:", error);
+    }
+  };
 
   return (
     <Aside
@@ -107,6 +135,32 @@ const ResourceBar = ({ docID }: any) => {
           </Group>
         </div>
       </Aside.Section>
+      <Modal
+        title="Edit Topic"
+        opened={topicModalOpened}
+        onClose={close}
+        centered
+      >
+        <Select
+          label="Select a Topic"
+          placeholder={resourceInfo.topics[resourceInfo.topics.length - 1]}
+          data={topics.map((topic: any) => ({ label: topic, value: topic }))}
+          value={
+            selectedTopic
+              ? selectedTopic
+              : resourceInfo.topics[resourceInfo.topics.length - 1]
+          }
+          onChange={(value) => setSelectedTopic(value || "")}
+          mb="sm"
+          maxDropdownHeight={300}
+        />
+        <Button
+          className="mt-4  bg-[#5452FF] hover:bg-[#4744f9] text-white font-semibold py-2 px-4 rounded-md w-full"
+          onClick={() => editTopicName()}
+        >
+          Save Topic
+        </Button>
+      </Modal>
     </Aside>
   );
 };

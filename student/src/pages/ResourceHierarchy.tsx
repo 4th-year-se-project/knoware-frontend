@@ -130,7 +130,21 @@ const ResourceHierarchy = (props: Props) => {
             </Navbar.Section>
           </Navbar>
         }
-        aside={<ResourceBar docID={selectedDocId} />}
+        aside={
+          <ResourceBar
+            docID={selectedDocId}
+            topics={
+              courseData && courseData.topics
+                ? courseData.topics.flatMap((topic: any) =>
+                    topic.subtopics.map(
+                      (subtopic: { subtopic_name: any }) =>
+                        subtopic.subtopic_name
+                    )
+                  )
+                : []
+            }
+          />
+        }
         styles={(theme) => ({
           main: {
             backgroundColor:
