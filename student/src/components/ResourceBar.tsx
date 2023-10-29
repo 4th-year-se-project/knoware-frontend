@@ -6,9 +6,7 @@ import {
   Aside,
   ScrollArea,
   Modal,
-  Select,
-  Breadcrumbs,
-  Text,
+  Select
 } from "@mantine/core";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { getResourceInfo } from "../services/resourceAPI";
@@ -16,6 +14,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Button } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { editTopic, deleteResource, getPdf } from "../services/resourceAPI";
+import { useNavigate } from 'react-router-dom';
 
 const ResourceBar = ({ docID, topics }: any) => {
   const [topicModalOpened, { open, close }] = useDisclosure(false);
@@ -24,6 +23,7 @@ const ResourceBar = ({ docID, topics }: any) => {
   const query = useSelector((state: any) => state.query.value);
   const [resourceInfo, setResourceInfo] = useState<any>({});
   const [opened, { toggle }] = useDisclosure(true);
+  const navigate = useNavigate();
 
   const getResouceInfo = async () => {
     try {
@@ -52,7 +52,7 @@ const ResourceBar = ({ docID, topics }: any) => {
       const response = await deleteResource(parseInt(docID, 10));
       console.log(response);
       if (response.status === 200) {
-        window.location.reload();
+        navigate('/search-results');
       }
     } catch (error) {
       console.error("Error deleting resource:", error);
