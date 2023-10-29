@@ -7,6 +7,8 @@ import {
   ScrollArea,
   Modal,
   Select,
+  Breadcrumbs,
+  Text,
 } from "@mantine/core";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { getResourceInfo } from "../services/resourceAPI";
@@ -102,7 +104,14 @@ const ResourceBar = ({ docID, topics }: any) => {
           opened={opened}
           onClick={handleCollapsedChange}
         />
+
         <div className={`mt-8 p-4 ${collapsed ? "hidden" : "block"}`}>
+          <Group>
+            <p className="mb-2 whitespace-normal break-all overflow-hidden">
+              {resourceInfo.topics?.[1]}
+            </p>
+          </Group>
+
           <Group>
             <p className="font-normal text-sm mb-2 whitespace-normal break-all overflow-hidden">
               {resourceInfo.title}
