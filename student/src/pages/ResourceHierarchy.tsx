@@ -9,13 +9,13 @@ import { ResourceBar } from "../components";
 type Props = {};
 
 const ResourceHierarchy = (props: Props) => {
-  const docID = sessionStorage.getItem("docID");
   const [courseData, setCourseData] = useState<any>({
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
   const [zoomedId, setZoomedId] = useState<string | null>(null);
-  const [selectedDocId, setSelectedDocId] = useState<any>(docID);
+  const [selectedDocId, setSelectedDocId] = useState<any>(sessionStorage.getItem("docID"));
   const [chartData, setChartData] = useState<any>({});
+  const [docID, setDocID] = useState<any>(sessionStorage.getItem("docID"))
   const navigate = useNavigate();
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
@@ -36,25 +36,20 @@ const ResourceHierarchy = (props: Props) => {
       if (docID !== null && docID !== undefined) {
         const response = await getCourseDetails(parseInt(docID, 10));
         const data = await response.data;
+        console.log(data)
         setCourseData(data);
         const newChartData = {
           name: "root",
           children: data.topics.map((topic: any, topicIndex: number) => ({
             name: topic.topic_name,
-            children: topic.subtopics.map(
-              (subtopic: any, subtopicIndex: number) => ({
-                name: subtopic.subtopic_name,
-                children: subtopic.documents.map((document: any) => ({
-                  doc_id: document.document_id,
-                  name: document.document_name,
-                  value: document.similarity_score,
-                  color:
-                    randomColorSet[
-                      topicIndex * data.topics.length + subtopicIndex
-                    ], // Assign colors based on the topic and subtopic index
-                })),
-              })
-            ),
+
+            children: topic.documents.map((document: any) => ({
+              doc_id: document.document_id,
+              name: document.document_name,
+              value: document.similarity_score,
+              color:
+                randomColorSet[topicIndex * data.topics.length + topicIndex], // Assign colors based on the topic and subtopic index
+            })),
           })),
         };
         setChartData(newChartData);
@@ -68,13 +63,20 @@ const ResourceHierarchy = (props: Props) => {
 
   useEffect(() => {
     getCourseData();
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, [docID]); // Empty dependency array means this effect runs once on mount
 
   // Define the onClick handler
   const handleLeafClick = (node: any) => {
     if (!node.children) {
       console.log(`Clicked on leaf node: ${node.data.name}`);
     }
+  };
+
+  const handleDocumentClick = (selectedDoc: number) => {
+    console.log(selectedDoc)
+    sessionStorage.setItem('docID', String(selectedDoc));
+    setDocID(selectedDoc)
+    setSelectedDocId(selectedDoc);
   };
 
   return (
@@ -93,33 +95,19 @@ const ResourceHierarchy = (props: Props) => {
                         {topic.topic_name}
                       </Accordion.Control>
                       <Accordion.Panel>
-                        {topic.subtopics.map((subtopic: any, index: number) => (
-                          <Accordion variant="separated">
-                            <Accordion.Item
-                              key={index}
-                              value={subtopic.subtopic_name}
-                            >
-                              <Accordion.Control className="text-sm">
-                                {subtopic.subtopic_name}
-                              </Accordion.Control>
-                              <Accordion.Panel>
-                                <List>
-                                  {subtopic.documents.map(
-                                    (document: any, index: number) => (
-                                      <List.Item
-                                        key={index}
-                                        className="text-xs text-blue-700 cursor-pointer"
-                                        onClick={() => {}}
-                                      >
-                                        {document.document_name}
-                                      </List.Item>
-                                    )
-                                  )}
-                                </List>
-                              </Accordion.Panel>
-                            </Accordion.Item>
-                          </Accordion>
-                        ))}
+                        <List>
+                          {topic.documents.map(
+                            (document: any) => (
+                              <List.Item
+                                key={document.id}
+                                className="text-xs text-blue-700 cursor-pointer ml-1"
+                                onClick={() => handleDocumentClick(document.document_id)}
+                              >
+                                {document.document_name}
+                              </List.Item>
+                            )
+                          )}
+                        </List>
                       </Accordion.Panel>
                     </Accordion.Item>
                   ))}
@@ -130,7 +118,16 @@ const ResourceHierarchy = (props: Props) => {
             </Navbar.Section>
           </Navbar>
         }
-        aside={<ResourceBar docID={selectedDocId} />}
+        aside={
+          <ResourceBar
+            docID={selectedDocId}
+            topics={
+              courseData && courseData.topics
+                ? courseData.topics.map((topic: any) => topic.topic_name)
+                : []
+            }
+          />
+        }
         styles={(theme) => ({
           main: {
             backgroundColor:

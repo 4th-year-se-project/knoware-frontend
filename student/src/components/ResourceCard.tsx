@@ -12,6 +12,7 @@ import {
   IconFileTypePdf,
   IconPresentation,
   IconFileText,
+  IconHeadphones,
 } from "@tabler/icons-react";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -56,6 +57,8 @@ const ResourceCard = ({
     icon = <IconPresentation size={rem(40)} />;
   } else if (fileExtension === "doc" || fileExtension === "docx") {
     icon = <IconFileText size={rem(40)} />;
+  } else if (fileExtension === "mp4") {
+    icon = <IconHeadphones size={rem(40)} />;
   } else {
     icon = <IconBrandYoutubeFilled size={rem(40)} />;
   }
