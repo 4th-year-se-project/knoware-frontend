@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ResponsiveCirclePacking } from "@nivo/circle-packing";
-import { AppShell, Navbar, Accordion, ScrollArea, List } from "@mantine/core";
+import {
+  AppShell,
+  Navbar,
+  Accordion,
+  ScrollArea,
+  List,
+  Text,
+} from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
 import { getCourseDetails } from "../services/resourceAPI";
@@ -13,9 +20,11 @@ const ResourceHierarchy = (props: Props) => {
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
   const [zoomedId, setZoomedId] = useState<string | null>(null);
-  const [selectedDocId, setSelectedDocId] = useState<any>(sessionStorage.getItem("docID"));
+  const [selectedDocId, setSelectedDocId] = useState<any>(
+    sessionStorage.getItem("docID")
+  );
   const [chartData, setChartData] = useState<any>({});
-  const [docID, setDocID] = useState<any>(sessionStorage.getItem("docID"))
+  const [docID, setDocID] = useState<any>(sessionStorage.getItem("docID"));
   const navigate = useNavigate();
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
@@ -36,7 +45,7 @@ const ResourceHierarchy = (props: Props) => {
       if (docID !== null && docID !== undefined) {
         const response = await getCourseDetails(parseInt(docID, 10));
         const data = await response.data;
-        console.log(data)
+        console.log(data);
         setCourseData(data);
         const newChartData = {
           name: "root",
@@ -73,9 +82,9 @@ const ResourceHierarchy = (props: Props) => {
   };
 
   const handleDocumentClick = (selectedDoc: number) => {
-    console.log(selectedDoc)
-    sessionStorage.setItem('docID', String(selectedDoc));
-    setDocID(selectedDoc)
+    console.log(selectedDoc);
+    sessionStorage.setItem("docID", String(selectedDoc));
+    setDocID(selectedDoc);
     setSelectedDocId(selectedDoc);
   };
 
@@ -86,6 +95,15 @@ const ResourceHierarchy = (props: Props) => {
         header={<HeaderBar onLogoClick={handleLogoClick} />}
         navbar={
           <Navbar width={{ base: 300 }} height="full" p="md">
+            <Text
+              className="mb-4"
+              size="lg"
+              fw={650}
+              variant="gradient"
+              gradient={{ from: "violet", to: "grape", deg: 163 }}
+            >
+              {courseData.course_name}
+            </Text>
             <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
               {courseData.topics && courseData.topics.length > 0 ? ( // Check if courseData is available
                 <Accordion variant="contained">
@@ -96,17 +114,17 @@ const ResourceHierarchy = (props: Props) => {
                       </Accordion.Control>
                       <Accordion.Panel>
                         <List>
-                          {topic.documents.map(
-                            (document: any) => (
-                              <List.Item
-                                key={document.id}
-                                className="text-xs text-blue-700 cursor-pointer ml-1"
-                                onClick={() => handleDocumentClick(document.document_id)}
-                              >
-                                {document.document_name}
-                              </List.Item>
-                            )
-                          )}
+                          {topic.documents.map((document: any) => (
+                            <List.Item
+                              key={document.id}
+                              className="text-xs text-blue-700 cursor-pointer ml-1"
+                              onClick={() =>
+                                handleDocumentClick(document.document_id)
+                              }
+                            >
+                              {document.document_name}
+                            </List.Item>
+                          ))}
                         </List>
                       </Accordion.Panel>
                     </Accordion.Item>
