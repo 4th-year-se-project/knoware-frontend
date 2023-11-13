@@ -7,11 +7,16 @@ import {
   ScrollArea,
   List,
   Text,
+  Button,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
-import { getCourseDetails } from "../services/resourceAPI";
+import {
+  getCourseDetails,
+  getRecommendedResources,
+} from "../services/resourceAPI";
 import { ResourceBar } from "../components";
+import { AxiosResponse } from "axios";
 
 type Props = {};
 
@@ -20,6 +25,9 @@ const ResourceHierarchy = (props: Props) => {
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
   const [zoomedId, setZoomedId] = useState<string | null>(null);
+  const [recommendedResources, setRecommendedResources] = useState<any[]>([]);
+  const [showRecommendations, setShowRecommendations] =
+    useState<boolean>(false);
   const [selectedDocId, setSelectedDocId] = useState<any>(
     sessionStorage.getItem("docID")
   );
@@ -86,6 +94,40 @@ const ResourceHierarchy = (props: Props) => {
     sessionStorage.setItem("docID", String(selectedDoc));
     setDocID(selectedDoc);
     setSelectedDocId(selectedDoc);
+  };
+
+  const getRecommendations = async () => {
+    try {
+      const response = await getRecommendedResources({
+        document_id: 2,
+      });
+      console.log(response.data);
+
+      const resources = response.data.results; // Extract the relevant data from the response
+      console.log(resources);
+      resources.forEach((resource: any) => {
+        console.log(resource.document_title);
+      });
+      setRecommendedResources(resources);
+      const recommendationData = {
+        name: "root",
+        children: resources.map((resource: any) => ({
+          name: resource.document_title,
+          value: resource.similarity_score,
+          color: "purple",
+          recc: true,
+        })),
+      };
+      //   const currentChartData = { ...chartData };
+
+      // // Modify the necessary parts
+      // currentChartData.children = [...currentChartData.children, newData];
+      setChartData(recommendationData);
+
+      setShowRecommendations(true); // Show recommendations when fetched
+    } catch (error) {
+      console.error("Error getting recommendations:", error);
+    }
   };
 
   return (
@@ -155,6 +197,9 @@ const ResourceHierarchy = (props: Props) => {
           },
         })}
       >
+        <p className="absolute ml-12 z-10" onClick={() => getRecommendations()}>
+          Recommend
+        </p>
         <ResponsiveCirclePacking
           data={chartData}
           margin={{
@@ -177,6 +222,8 @@ const ResourceHierarchy = (props: Props) => {
             setZoomedId(zoomedId === node.id ? null : node.id);
             setSelectedDocId(node.data.doc_id);
           }}
+          borderColor={(node) => (node.data.recc ? "black" : "transparent")}
+          borderWidth={2}
         />
       </AppShell>
     </>
