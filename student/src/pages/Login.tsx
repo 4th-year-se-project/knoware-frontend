@@ -8,11 +8,12 @@ import {
   FilledInput,
   InputAdornment,
   IconButton,
-  Typography,
-  OutlinedInput,
+  Typography
 } from "@material-ui/core";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../login/authContext";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -27,9 +28,13 @@ const Login: React.FC = () => {
     event.preventDefault();
   };
 
+  const navigate = useNavigate();
+
+  const { login } = useAuth();
+
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:8081/login", {
+      const response = await fetch("http://localhost:8080/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,9 +51,10 @@ const Login: React.FC = () => {
 
       const data = await response.json();
       const accessToken = data.access_token;
-
       localStorage.setItem("access_token", accessToken);
       console.log("Login successful");
+      login();
+      navigate("/home")
     } catch (error: any) {
       setError(error.message);
     }
@@ -57,15 +63,6 @@ const Login: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <img src={Logo} alt="logo" width={300} />
-      {/* <label>
-        Username:
-        <input
-          name="emailOrUsername"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </label> */}
       <div className="flex flex-col items-center justify-center login-box">
         <Typography variant="h5" className="pb-10px">
           Login
@@ -79,14 +76,6 @@ const Login: React.FC = () => {
           onChange={(e) => setUsername(e.target.value)}
           className="login-input-field"
         />
-        {/* <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div> */}
         <FormControl variant="filled">
           <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
           <FilledInput
