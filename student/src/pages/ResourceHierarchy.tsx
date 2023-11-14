@@ -19,7 +19,7 @@ const ResourceHierarchy = (props: Props) => {
   const navigate = useNavigate();
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
-    navigate("/");
+    navigate("/home");
   }, [navigate]);
 
   const randomColorSet = Array.from({ length: 200 }, () => {
