@@ -1,4 +1,9 @@
 import axios, { AxiosResponse } from "axios";
+import authToken from "../login/authToken";
+
+if (localStorage.accessToken) {
+  authToken(localStorage.accessToken);
+}
 
 type SearchRequestBody = {
   query: string;
