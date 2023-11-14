@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import authToken from "../login/authToken";
 
-if (localStorage.accessToken) {
-  authToken(localStorage.accessToken);
+if (localStorage.access_token) {
+  authToken(localStorage.access_token);
 }
 
 export const getCourseDetails = async (
