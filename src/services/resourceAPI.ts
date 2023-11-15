@@ -5,7 +5,7 @@ export const getCourseDetails = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/course?document_id=${documentId}`
+      `http://64.227.140.108/course?document_id=${documentId}`
     );
     return response;
   } catch (error) {
@@ -20,7 +20,7 @@ export const getResourceInfo = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/resource-info?document_id=${documentId}&query=${query}`
+      `http://64.227.140.108/resource-info?document_id=${documentId}&query=${query}`
     );
     return response;
   } catch (error) {
@@ -34,7 +34,7 @@ export const deleteResource = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.delete(
-      `http://localhost:8080/resource?document_id=${documentId}`
+      `http://64.227.140.108/resource?document_id=${documentId}`
     );
     return response;
   } catch (error) {
@@ -49,7 +49,7 @@ export const editTopic = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.put(
-      `http://localhost:8080/topic?document_id=${documentId}&topic=${topic}`
+      `http://64.227.140.108/topic?document_id=${documentId}&topic=${topic}`
     );
     return response;
   } catch (error) {
@@ -64,7 +64,7 @@ export const getPdf = async (
   console.log(filename)
   try {
     const response = await axios.get(
-      `http://localhost:8080/getPdf?filename=${filename}`,   {
+      `http://64.227.140.108/getPdf?filename=${filename}`,   {
         responseType: 'blob', // Set response type to blob
       }
     );
