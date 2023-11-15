@@ -1,15 +1,5 @@
 import React, { useState } from "react";
 import Logo from "../assets/images/logo.svg";
-import {
-  Button,
-  TextField,
-  FormControl,
-  InputLabel,
-  FilledInput,
-  InputAdornment,
-  IconButton,
-  Typography,
-} from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../login/authContext";
 
@@ -61,86 +51,44 @@ const Login: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <img src={Logo} alt="logo" width={300} />
-      <div className="flex flex-col items-center justify-center login-box">
-        <Typography variant="h5" className="pb-10px">
-          Login
-        </Typography>
-        <TextField
-          id="filled-basic"
-          name="emailOrUsername"
-          label="Username"
-          variant="filled"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="login-input-field"
-        />
-        <FormControl variant="filled">
-          <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
-          <FilledInput
-            id="filled-adornment-password"
-            type={showPassword ? "text" : "password"}
-            value={password}
-            className="login-input-field mt-3 mb-3"
-            onChange={(e) => setPassword(e.target.value)}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="icon icon-tabler icon-tabler-eye-off"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                      stroke="currentColor"
-                      fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" />
-                      <path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" />
-                      <path d="M3 3l18 18" />
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="icon icon-tabler icon-tabler-eye"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                      stroke="currentColor"
-                      fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                      <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
-                    </svg>
-                  )}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-        <Button
-          onClick={handleLogin}
-          variant="contained"
-          className="login-button"
-        >
-          Login
-        </Button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* <div className="flex flex-col items-center justify-center"> */}
+        <div className="w-full max-w-xs">
+          <div className="bg-white shadow-md rounded px-8 pt-2 pb-8 mb-4 w-full">
+            <h5 className="text-3xl text-center dark:text-black mb-4">
+              Login
+            </h5>
+            <div className="mb-4">
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="username"
+                type="text"
+                name="emailOrUsername"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="mb-6">
+              <input
+                className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                id="password"
+                value={password}
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                onClick={handleLogin}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+              >
+                Login
+              </button>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    // </div>
   );
 };
 
