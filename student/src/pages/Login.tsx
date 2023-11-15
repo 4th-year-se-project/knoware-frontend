@@ -10,12 +10,6 @@ const Login: React.FC = () => {
 
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event: any) => {
-    event.preventDefault();
-  };
-
   const navigate = useNavigate();
 
   const { login } = useAuth();
