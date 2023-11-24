@@ -86,12 +86,6 @@ const ResourceHierarchy = (props: Props) => {
     getCourseData();
   }, [docID]); // Empty dependency array means this effect runs once on mount
 
-  useEffect(() => {
-    if (showRecommendations) {
-      setChartData(originalCourseData);
-    }
-  }, [showRecommendations, chartData]);
-
   // Define the onClick handler
   const handleLeafClick = (node: any) => {
     if (!node.children) {
@@ -109,17 +103,15 @@ const ResourceHierarchy = (props: Props) => {
   const getRecommendations = async () => {
     try {
       if (showRecommendations) {
-        setChartData({});
+        setChartData(originalCourseData);
         setShowRecommendations(false);
         return;
       }
       const response = await getRecommendedResources({
         document_id: 2,
       });
-      console.log(response.data);
 
       const resources = response.data.results; // Extract the relevant data from the response
-      console.log(resources);
       resources.forEach((resource: any) => {
         console.log(resource.document_title);
       });
