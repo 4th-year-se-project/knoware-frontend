@@ -24,6 +24,9 @@ const ResourceHierarchy = (props: Props) => {
   const [courseData, setCourseData] = useState<any>({
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
+  const [originalCourseData, setOriginalCourseData] = useState<any>({
+    // Provide an initial empty array or an appropriate initial structure
+  });
   const [zoomedId, setZoomedId] = useState<string | null>(null);
   const [recommendedResources, setRecommendedResources] = useState<any[]>([]);
   const [showRecommendations, setShowRecommendations] =
@@ -69,6 +72,7 @@ const ResourceHierarchy = (props: Props) => {
             })),
           })),
         };
+        setOriginalCourseData(newChartData);
         setChartData(newChartData);
       } else {
         console.error("docID is null or undefined");
@@ -81,6 +85,12 @@ const ResourceHierarchy = (props: Props) => {
   useEffect(() => {
     getCourseData();
   }, [docID]); // Empty dependency array means this effect runs once on mount
+
+  useEffect(() => {
+    if (showRecommendations) {
+      setChartData(originalCourseData);
+    }
+  }, [showRecommendations, chartData]);
 
   // Define the onClick handler
   const handleLeafClick = (node: any) => {
@@ -98,6 +108,11 @@ const ResourceHierarchy = (props: Props) => {
 
   const getRecommendations = async () => {
     try {
+      if (showRecommendations) {
+        setChartData({});
+        setShowRecommendations(false);
+        return;
+      }
       const response = await getRecommendedResources({
         document_id: 2,
       });
@@ -111,18 +126,24 @@ const ResourceHierarchy = (props: Props) => {
       setRecommendedResources(resources);
       const recommendationData = {
         name: "root",
-        children: resources.map((resource: any) => ({
-          name: resource.document_title,
+        children: resources.map((resource: any, index: number) => ({
+          name: `${index + 1}. ${resource.document_title}`, // Adding 1 to index for 1-based enumeration
           value: resource.similarity_score,
           color: "purple",
           recc: true,
         })),
       };
-      //   const currentChartData = { ...chartData };
 
-      // // Modify the necessary parts
-      // currentChartData.children = [...currentChartData.children, newData];
-      setChartData(recommendationData);
+      const combinedChildren = originalCourseData.children.concat(
+        recommendationData.children
+      );
+
+      const combinedChartData = {
+        name: "combinedRoot",
+        children: combinedChildren,
+      };
+
+      setChartData(combinedChartData);
 
       setShowRecommendations(true); // Show recommendations when fetched
     } catch (error) {
@@ -197,7 +218,10 @@ const ResourceHierarchy = (props: Props) => {
           },
         })}
       >
-        <p className="absolute ml-12 z-10" onClick={() => getRecommendations()}>
+        <p
+          className="absolute ml-12 z-10 bg-purple-600 border-1 cursor-pointer rounded-md text-white px-2 py-1"
+          onClick={() => getRecommendations()}
+        >
           Recommend
         </p>
         <ResponsiveCirclePacking
