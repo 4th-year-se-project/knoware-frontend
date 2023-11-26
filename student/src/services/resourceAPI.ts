@@ -10,7 +10,12 @@ export const getCourseDetails = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/course?document_id=${documentId}`
+      `http://localhost:8080/course?document_id=${documentId}`, 
+      {
+        headers: {
+          "Authorization": `Bearer ${localStorage.access_token}`
+        }
+      }
     );
     return response;
   } catch (error) {
@@ -25,7 +30,12 @@ export const getResourceInfo = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/resource-info?document_id=${documentId}&query=${query}`
+      `http://localhost:8080/resource-info?document_id=${documentId}&query=${query}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${localStorage.access_token}`
+        }
+      }
     );
     return response;
   } catch (error) {
@@ -39,7 +49,12 @@ export const deleteResource = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.delete(
-      `http://localhost:8080/resource?document_id=${documentId}`
+      `http://localhost:8080/resource?document_id=${documentId}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${localStorage.access_token}`
+        }
+      }
     );
     return response;
   } catch (error) {
@@ -54,7 +69,12 @@ export const editTopic = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.put(
-      `http://localhost:8080/topic?document_id=${documentId}&topic=${topic}`
+      `http://localhost:8080/topic?document_id=${documentId}&topic=${topic}`,
+      {
+        headers: {
+          "Authorization": `Bearer ${localStorage.access_token}`
+        }
+      }
     );
     return response;
   } catch (error) {
@@ -70,7 +90,11 @@ export const getPdf = async (
   try {
     const response = await axios.get(
       `http://localhost:8080/getPdf?filename=${filename}`,   {
-        responseType: 'blob', // Set response type to blob
+        responseType: 'blob', // Set response type to blo
+        headers: {
+          "Authorization": `Bearer ${localStorage.access_token}`
+        }
+        
       }
     );
     return response;

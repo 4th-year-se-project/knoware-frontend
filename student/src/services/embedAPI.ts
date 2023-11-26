@@ -28,7 +28,12 @@ export const embedYoutube = async (
   try {
     const response = await axios.post(
       "http://localhost:8080/embed_youtube",
-      data
+      data,
+      {
+        headers: {
+          "Authorization": `Bearer ${localStorage.access_token}`
+        }
+      }
     );
     return response;
   } catch (error) {
@@ -52,6 +57,7 @@ export const embedFile = async (file: File): Promise<AxiosResponse> => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${localStorage.access_token}`
           },
         }
       );

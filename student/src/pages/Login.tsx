@@ -36,7 +36,7 @@ const Login: React.FC = () => {
       localStorage.setItem("access_token", accessToken);
       console.log("Login successful");
       login();
-      navigate("/home");
+      navigate("/");
     } catch (error: any) {
       setError(error.message);
     }

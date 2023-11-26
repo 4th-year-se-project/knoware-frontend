@@ -12,7 +12,7 @@ function App() {
     <Provider store={store}>
       <Router>
         <Routes>
-          <Route path="/home" element={ isAuthenticated ? <Home /> : <Navigate to="/login" /> } />
+          <Route path="/" element={ isAuthenticated ? <Home /> : <Navigate to="/login" /> } />
           <Route path="/search-results" element={ isAuthenticated ? <SearchResults /> : <Navigate to="/login" /> } />
           <Route path="/resource-hierarchy" element={ isAuthenticated ? <ResourceHierarchy /> : <Navigate to="/login" /> } />
           <Route path="*" element={<NotFound />} />

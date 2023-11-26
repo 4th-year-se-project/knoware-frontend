@@ -14,7 +14,7 @@ const SearchResults = (props: Props) => {
   const query = useSelector((state: any) => state.query.value);
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
-    navigate("/home");
+    navigate("/");
   }, [navigate]);
 
   const performSearch = async () => {
