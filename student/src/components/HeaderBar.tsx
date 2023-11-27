@@ -3,6 +3,8 @@ import Logo from "../assets/images/logo.svg";
 import DefaultAvatar from "../assets/images/avatar.jpg";
 import SearchBar from "./SearchBar";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { useAuth } from "../login/authContext";
 
 type Props = {
   onLogoClick: () => void;
@@ -10,6 +12,15 @@ type Props = {
 
 const HeaderBar = (props: Props) => {
   const query = useSelector((state: any) => state.query.value);
+  const { logout } = useAuth()
+  const handleLogout = async () => {
+    try {
+      await axios.post('http://localhost:8080/logout');
+      logout()
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
   return (
     <Header height={80} className="flex items-center justify-between px-40">
       <div className="flex items-center">
@@ -30,6 +41,7 @@ const HeaderBar = (props: Props) => {
           John Doe
         </Text>
       </Group>
+      <button onClick={handleLogout}>Logout</button>
     </Header>
   );
 };
