@@ -5,6 +5,10 @@ if (localStorage.access_token) {
   authToken(localStorage.access_token);
 }
 
+type RecommendedResourcesRequestBody = {
+  document_id: number;
+};
+
 export const getCourseDetails = async (
   documentId: number
 ): Promise<AxiosResponse> => {
@@ -83,18 +87,16 @@ export const editTopic = async (
   }
 };
 
-export const getPdf = async (
-  filename: string,
-): Promise<AxiosResponse> => {
-  console.log(filename)
+export const getPdf = async (filename: string): Promise<AxiosResponse> => {
+  console.log(filename);
   try {
     const response = await axios.get(
-      `http://localhost:8080/getPdf?filename=${filename}`,   {
+      `http://localhost:8080/getPdf?filename=${filename}`,   
+      {
         responseType: 'blob', // Set response type to blo
         headers: {
           "Authorization": `Bearer ${localStorage.access_token}`
         }
-        
       }
     );
     return response;
@@ -104,4 +106,14 @@ export const getPdf = async (
   }
 };
 
-
+export const getRecommendedResources = async (
+  data: RecommendedResourcesRequestBody
+): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.post("http://localhost:8080/recommend", data);
+    return response;
+  } catch (error) {
+    // Handle any errors here
+    throw error;
+  }
+};

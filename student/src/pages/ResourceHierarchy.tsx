@@ -1,10 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ResponsiveCirclePacking } from "@nivo/circle-packing";
-import { AppShell, Navbar, Accordion, ScrollArea, List } from "@mantine/core";
+import {
+  AppShell,
+  Navbar,
+  Accordion,
+  ScrollArea,
+  List,
+  Text,
+  Button,
+} from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import HeaderBar from "../components/HeaderBar";
-import { getCourseDetails } from "../services/resourceAPI";
+import {
+  getCourseDetails,
+  getRecommendedResources,
+} from "../services/resourceAPI";
 import { ResourceBar } from "../components";
+import { AxiosResponse } from "axios";
 
 type Props = {};
 
@@ -12,10 +24,18 @@ const ResourceHierarchy = (props: Props) => {
   const [courseData, setCourseData] = useState<any>({
     topics: [], // Provide an initial empty array or an appropriate initial structure
   });
+  const [originalCourseData, setOriginalCourseData] = useState<any>({
+    // Provide an initial empty array or an appropriate initial structure
+  });
   const [zoomedId, setZoomedId] = useState<string | null>(null);
-  const [selectedDocId, setSelectedDocId] = useState<any>(sessionStorage.getItem("docID"));
+  const [recommendedResources, setRecommendedResources] = useState<any[]>([]);
+  const [showRecommendations, setShowRecommendations] =
+    useState<boolean>(false);
+  const [selectedDocId, setSelectedDocId] = useState<any>(
+    sessionStorage.getItem("docID")
+  );
   const [chartData, setChartData] = useState<any>({});
-  const [docID, setDocID] = useState<any>(sessionStorage.getItem("docID"))
+  const [docID, setDocID] = useState<any>(sessionStorage.getItem("docID"));
   const navigate = useNavigate();
   const handleLogoClick = useCallback(() => {
     console.log("Logo clicked");
@@ -36,7 +56,7 @@ const ResourceHierarchy = (props: Props) => {
       if (docID !== null && docID !== undefined) {
         const response = await getCourseDetails(parseInt(docID, 10));
         const data = await response.data;
-        console.log(data)
+        console.log(data);
         setCourseData(data);
         const newChartData = {
           name: "root",
@@ -52,6 +72,7 @@ const ResourceHierarchy = (props: Props) => {
             })),
           })),
         };
+        setOriginalCourseData(newChartData);
         setChartData(newChartData);
       } else {
         console.error("docID is null or undefined");
@@ -73,10 +94,53 @@ const ResourceHierarchy = (props: Props) => {
   };
 
   const handleDocumentClick = (selectedDoc: number) => {
-    console.log(selectedDoc)
-    sessionStorage.setItem('docID', String(selectedDoc));
-    setDocID(selectedDoc)
+    console.log(selectedDoc);
+    sessionStorage.setItem("docID", String(selectedDoc));
+    setDocID(selectedDoc);
     setSelectedDocId(selectedDoc);
+  };
+
+  const getRecommendations = async () => {
+    try {
+      if (showRecommendations) {
+        setChartData(originalCourseData);
+        setShowRecommendations(false);
+        return;
+      }
+      const response = await getRecommendedResources({
+        document_id: 2,
+      });
+
+      const resources = response.data.results; // Extract the relevant data from the response
+      resources.forEach((resource: any) => {
+        console.log(resource.document_title);
+      });
+      setRecommendedResources(resources);
+      const recommendationData = {
+        name: "root",
+        children: resources.map((resource: any, index: number) => ({
+          name: `${index + 1}. ${resource.document_title}`, // Adding 1 to index for 1-based enumeration
+          value: resource.similarity_score,
+          color: "purple",
+          recc: true,
+        })),
+      };
+
+      const combinedChildren = originalCourseData.children.concat(
+        recommendationData.children
+      );
+
+      const combinedChartData = {
+        name: "combinedRoot",
+        children: combinedChildren,
+      };
+
+      setChartData(combinedChartData);
+
+      setShowRecommendations(true); // Show recommendations when fetched
+    } catch (error) {
+      console.error("Error getting recommendations:", error);
+    }
   };
 
   return (
@@ -86,6 +150,15 @@ const ResourceHierarchy = (props: Props) => {
         header={<HeaderBar onLogoClick={handleLogoClick} />}
         navbar={
           <Navbar width={{ base: 300 }} height="full" p="md">
+            <Text
+              className="mb-4"
+              size="lg"
+              fw={650}
+              variant="gradient"
+              gradient={{ from: "violet", to: "grape", deg: 163 }}
+            >
+              {courseData.course_name}
+            </Text>
             <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
               {courseData.topics && courseData.topics.length > 0 ? ( // Check if courseData is available
                 <Accordion variant="contained">
@@ -96,17 +169,17 @@ const ResourceHierarchy = (props: Props) => {
                       </Accordion.Control>
                       <Accordion.Panel>
                         <List>
-                          {topic.documents.map(
-                            (document: any) => (
-                              <List.Item
-                                key={document.id}
-                                className="text-xs text-blue-700 cursor-pointer ml-1"
-                                onClick={() => handleDocumentClick(document.document_id)}
-                              >
-                                {document.document_name}
-                              </List.Item>
-                            )
-                          )}
+                          {topic.documents.map((document: any) => (
+                            <List.Item
+                              key={document.id}
+                              className="text-xs text-blue-700 cursor-pointer ml-1"
+                              onClick={() =>
+                                handleDocumentClick(document.document_id)
+                              }
+                            >
+                              {document.document_name}
+                            </List.Item>
+                          ))}
                         </List>
                       </Accordion.Panel>
                     </Accordion.Item>
@@ -137,6 +210,12 @@ const ResourceHierarchy = (props: Props) => {
           },
         })}
       >
+        <p
+          className="absolute ml-12 z-10 bg-purple-600 border-1 cursor-pointer rounded-md text-white px-2 py-1"
+          onClick={() => getRecommendations()}
+        >
+          Recommend
+        </p>
         <ResponsiveCirclePacking
           data={chartData}
           margin={{
@@ -159,6 +238,8 @@ const ResourceHierarchy = (props: Props) => {
             setZoomedId(zoomedId === node.id ? null : node.id);
             setSelectedDocId(node.data.doc_id);
           }}
+          borderColor={(node) => (node.data.recc ? "black" : "transparent")}
+          borderWidth={2}
         />
       </AppShell>
     </>
