@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Logo from "../assets/images/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../login/authContext";
-import Cookies from 'js-cookie';
 
 
 const Login: React.FC = () => {
@@ -35,7 +34,7 @@ const Login: React.FC = () => {
 
       const data = await response.json();
       const accessToken = data.access_token;
-      sessionStorage.setItem("access_token", accessToken);
+      localStorage.setItem("access_token", accessToken);
       console.log("Login successful");
       login();
       navigate("/");

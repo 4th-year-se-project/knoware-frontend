@@ -1,4 +1,4 @@
-import { Header, Avatar, Group, Text } from "@mantine/core";
+import { Header, Avatar, Group, Text, Button } from "@mantine/core";
 import Logo from "../assets/images/logo.svg";
 import DefaultAvatar from "../assets/images/avatar.jpg";
 import SearchBar from "./SearchBar";
@@ -41,7 +41,9 @@ const HeaderBar = (props: Props) => {
           John Doe
         </Text>
       </Group>
-      <button onClick={handleLogout}>Logout</button>
+      <Button onClick={handleLogout} variant="outline" color="blue" radius="md" size="xs" >
+        Logout
+      </Button>
     </Header>
   );
 };
