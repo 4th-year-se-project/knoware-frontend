@@ -3,6 +3,7 @@ import Logo from "../assets/images/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../login/authContext";
 
+
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +34,9 @@ const Login: React.FC = () => {
 
       const data = await response.json();
       const accessToken = data.access_token;
+      const name = data.name;
       localStorage.setItem("access_token", accessToken);
+      localStorage.setItem("name", name)
       console.log("Login successful");
       login();
       navigate("/");
