@@ -16,7 +16,6 @@ const HeaderBar = (props: Props) => {
   const { logout } = useAuth()
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:8080/logout');
       logout()
     } catch (error) {
       console.error('Logout failed:', error);
