@@ -1,10 +1,11 @@
-import { Header, Avatar, Group, Text, Button } from "@mantine/core";
+import { Header, Avatar, Group, Text } from "@mantine/core";
 import Logo from "../assets/images/logo.svg";
 import DefaultAvatar from "../assets/images/avatar.jpg";
 import SearchBar from "./SearchBar";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useAuth } from "../login/authContext";
+import { IconLogout } from '@tabler/icons-react';
 
 type Props = {
   onLogoClick: () => void;
@@ -36,14 +37,12 @@ const HeaderBar = (props: Props) => {
         <SearchBar initialQuery={query} />
       </div>
       <Group className="flex items-center">
-        <Avatar src={DefaultAvatar} radius="xl" alt="it's me" />
-        <Text color="dimmed" size="sm">
-          John Doe
+        <Avatar src={DefaultAvatar} radius="xl" alt="it's me" size="md" />
+        <Text color="dimmed" size="md" className="mr-4">
+        {localStorage.getItem("name")}
         </Text>
       </Group>
-      <Button onClick={handleLogout} variant="outline" color="blue" radius="md" size="xs" >
-        Logout
-      </Button>
+      <IconLogout onClick={handleLogout} color="#4263eb" className="cursor-pointer"/>
     </Header>
   );
 };

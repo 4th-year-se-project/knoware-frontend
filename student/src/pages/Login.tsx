@@ -34,7 +34,9 @@ const Login: React.FC = () => {
 
       const data = await response.json();
       const accessToken = data.access_token;
+      const name = data.name;
       localStorage.setItem("access_token", accessToken);
+      localStorage.setItem("name", name)
       console.log("Login successful");
       login();
       navigate("/");
