@@ -31,6 +31,8 @@ const SearchResults = (props: Props) => {
       setResults(newResults);
     } catch (error) {
       console.error("Error performing search:", error);
+      localStorage.clear()
+      navigate("/login")
     }
   };
 

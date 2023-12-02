@@ -79,6 +79,8 @@ const ResourceHierarchy = (props: Props) => {
       }
     } catch (error) {
       console.error("Error getting course data:", error);
+      localStorage.clear()
+      navigate("/login")
     }
   };
 
