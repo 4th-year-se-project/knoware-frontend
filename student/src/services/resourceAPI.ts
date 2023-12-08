@@ -14,7 +14,7 @@ export const getCourseDetails = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/course?document_id=${documentId}`, 
+      `https://knoware.live/course?document_id=${documentId}`, 
       {
         headers: {
           "Authorization": `Bearer ${localStorage.access_token}`
@@ -34,7 +34,7 @@ export const getResourceInfo = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/resource-info?document_id=${documentId}&query=${query}`,
+      `https://knoware.live/resource-info?document_id=${documentId}&query=${query}`,
       {
         headers: {
           "Authorization": `Bearer ${localStorage.access_token}`
@@ -53,7 +53,7 @@ export const deleteResource = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.delete(
-      `http://localhost:8080/resource?document_id=${documentId}`,
+      `https://knoware.live/resource?document_id=${documentId}`,
       {
         headers: {
           "Authorization": `Bearer ${localStorage.access_token}`
@@ -73,7 +73,7 @@ export const editTopic = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.put(
-      `http://localhost:8080/topic?document_id=${documentId}&topic=${topic}`,
+      `https://knoware.live/topic?document_id=${documentId}&topic=${topic}`,
       {
         headers: {
           "Authorization": `Bearer ${localStorage.access_token}`
@@ -91,7 +91,7 @@ export const getPdf = async (filename: string): Promise<AxiosResponse> => {
   console.log(filename);
   try {
     const response = await axios.get(
-      `http://localhost:8080/getPdf?filename=${filename}`,   
+      `https://knoware.live/getPdf?filename=${filename}`,   
       {
         responseType: 'blob', // Set response type to blo
         headers: {
@@ -110,7 +110,7 @@ export const getRecommendedResources = async (
   data: RecommendedResourcesRequestBody
 ): Promise<AxiosResponse> => {
   try {
-    const response = await axios.post("http://localhost:8080/recommend", data);
+    const response = await axios.post("https://knoware.live/recommend", data);
     return response;
   } catch (error) {
     // Handle any errors here

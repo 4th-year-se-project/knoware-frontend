@@ -14,7 +14,7 @@ export const search = async (
 ): Promise<AxiosResponse> => {
   try {
     console.log(data);
-    const response = await axios.post("http://localhost:8080/search", 
+    const response = await axios.post("https://knoware.live/search", 
     data,
     {
       headers: {
