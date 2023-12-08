@@ -6,7 +6,7 @@ import {
   Aside,
   ScrollArea,
   Modal,
-  Select
+  Select,
 } from "@mantine/core";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { getResourceInfo } from "../services/resourceAPI";
@@ -14,12 +14,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { Button } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { editTopic, deleteResource, getPdf } from "../services/resourceAPI";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const ResourceBar = ({ docID, topics }: any) => {
   const [topicModalOpened, { open, close }] = useDisclosure(false);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState(""); // State for selected topic
+  const [deleteConfirmationOpened, setDeleteConfirmationOpened] =
+    useState(false);
   const query = useSelector((state: any) => state.query.value);
   const [resourceInfo, setResourceInfo] = useState<any>({});
   const [opened, { toggle }] = useDisclosure(true);
@@ -47,15 +49,21 @@ const ResourceBar = ({ docID, topics }: any) => {
     setCollapsed(!collapsed);
   };
 
-  const handleResourceDelete = async () => {
+  const handleResourceDelete = () => {
+    setDeleteConfirmationOpened(true);
+  };
+
+  const confirmResourceDelete = async () => {
     try {
       const response = await deleteResource(parseInt(docID, 10));
       console.log(response);
       if (response.status === 200) {
-        navigate('/search-results');
+        navigate("/search-results");
       }
     } catch (error) {
       console.error("Error deleting resource:", error);
+    } finally {
+      setDeleteConfirmationOpened(false);
     }
   };
 
@@ -196,6 +204,22 @@ const ResourceBar = ({ docID, topics }: any) => {
           onClick={() => editTopicName()}
         >
           Save Topic
+        </Button>
+      </Modal>
+      <Modal
+        title="Delete Resource"
+        opened={deleteConfirmationOpened}
+        onClose={() => setDeleteConfirmationOpened(false)}
+        centered
+      >
+        <p className="font-normal text-sm">
+          Are you sure you want to delete this resource?
+        </p>
+        <Button
+          className="mt-4 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md w-full"
+          onClick={confirmResourceDelete}
+        >
+          Delete
         </Button>
       </Modal>
     </Aside>

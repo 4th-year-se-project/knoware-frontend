@@ -17,7 +17,7 @@ const EmbedAlert = (props: Props) => {
   const color = props.success ? "green" : "red";
   const message = props.success
     ? "Your resource was successfully embedded!"
-    : "Something terrible happened! You made a mistake and there is no going back, your data was lost forever!";
+    : "Something went wrong with uploading your resource. Please try again.";
   return (
     <Alert
       className="w-[500px] mt-4"
