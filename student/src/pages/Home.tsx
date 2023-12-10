@@ -25,6 +25,7 @@ const Home = (props: Props) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(true);
   const [alert, setAlert] = useState<boolean>(false);
+  const [embedError, setEmbedError] = useState<string>("")
 
   const uploadYoutube = async () => {
     try {
@@ -58,8 +59,14 @@ const Home = (props: Props) => {
         setSuccess(false);
         setAlert(true);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error embedding file:", error);
+
+      if (error.response && error.response.status === 400) {
+        setEmbedError("This resource already exists in your resource space!");
+      } else {
+        setEmbedError("Something went wrong with uploading your resource. Please try again.");
+      }
       setIsUploading(false);
       setSuccess(false);
       setAlert(true);
@@ -144,7 +151,7 @@ const Home = (props: Props) => {
         </Tabs>
       </Modal>
       {alert &&
-        EmbedAlert({ success: success, onClose: () => setAlert(false) })}
+        EmbedAlert({ success: success, errorMessage: embedError, onClose: () => setAlert(false) })}
     </div>
   );
 };
