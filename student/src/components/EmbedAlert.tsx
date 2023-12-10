@@ -4,6 +4,7 @@ import React from "react";
 
 type Props = {
   success: boolean;
+  errorMessage?: string;
   onClose: () => void;
 };
 
@@ -17,7 +18,7 @@ const EmbedAlert = (props: Props) => {
   const color = props.success ? "green" : "red";
   const message = props.success
     ? "Your resource was successfully embedded!"
-    : "Something went wrong with uploading your resource. Please try again.";
+    : props.errorMessage || "Something went wrong with uploading your resource. Please try again.";
   return (
     <Alert
       className="w-[500px] mt-4"
