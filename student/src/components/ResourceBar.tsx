@@ -87,7 +87,7 @@ const ResourceBar = ({ docID, topics }: any) => {
   const openPdfInNewWindow = async () => {
     try {
       // Fetch the PDF using the getPdf function
-      const response = await getPdf(resourceInfo.title);
+      const response = await getPdf(docID);
 
       // Create a blob URL for the PDF content
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });

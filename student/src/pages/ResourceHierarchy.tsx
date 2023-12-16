@@ -100,6 +100,10 @@ const ResourceHierarchy = (props: Props) => {
     setSelectedDocId(selectedDoc);
   };
 
+  const generateRandomNumber = () => {
+    return Math.floor(Math.random() * 10000); // Generates a random number between 0 and 9999
+  };
+
   const getRecommendations = async () => {
     try {
       if (showRecommendations) {
@@ -108,7 +112,7 @@ const ResourceHierarchy = (props: Props) => {
         return;
       }
       const response = await getRecommendedResources({
-        document_id: 2,
+        document_id: selectedDocId,
       });
 
       const resources = response.data.results; // Extract the relevant data from the response
@@ -118,8 +122,9 @@ const ResourceHierarchy = (props: Props) => {
       setRecommendedResources(resources);
       const recommendationData = {
         name: "root",
-        children: resources.map((resource: any, index: number) => ({
-          name: `${index + 1}. ${resource.document_title}`, // Adding 1 to index for 1-based enumeration
+        children: resources.map((resource: any) => ({
+          name: `${generateRandomNumber()}_${resource.document_title}`,
+          doc_id: resource.document_id,
           value: resource.similarity_score,
           color: "purple",
           recc: true,
