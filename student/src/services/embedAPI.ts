@@ -27,7 +27,7 @@ export const embedYoutube = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.post(
-      "http://localhost:8080/embed_youtube",
+      "http://localhost:8001/embed_youtube",
       data,
       {
         headers: {
@@ -52,7 +52,7 @@ export const embedFile = async (file: File): Promise<AxiosResponse> => {
     if (fileExtension && endpointMapping[fileExtension]) {
       const endpoint = endpointMapping[fileExtension];
       const response = await axios.post(
-        `http://localhost:8080/${endpoint}`,
+        `http://localhost:8001/${endpoint}`,
         formData,
         {
           headers: {
