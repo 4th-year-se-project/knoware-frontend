@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../assets/images/logo.svg";
 import {
   Group,
@@ -15,6 +15,8 @@ import { useDisclosure } from "@mantine/hooks";
 import SearchBar from "../components/SearchBar";
 import { embedFile, embedYoutube } from "../services/embedAPI";
 import EmbedAlert from "../components/EmbedAlert";
+import { useAuth } from "../login/authContext";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 
 type Props = {};
 
@@ -25,7 +27,37 @@ const Home = (props: Props) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(true);
   const [alert, setAlert] = useState<boolean>(false);
-  const [embedError, setEmbedError] = useState<string>("")
+  const [embedError, setEmbedError] = useState<string>("");
+  const navigate = useNavigate();
+  let query = useQuery();
+  const { login } = useAuth();
+
+  function useQuery() {
+    const { search } = useLocation();
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+  }
+
+  // Check for token in query parameters
+  const checkTokenAndNavigate = () => {
+    const accessToken: string = query.get("token") || "";
+    const name: string = query.get("name") || "";
+    console.log("Access token:", accessToken);
+
+    if (accessToken === "") {
+      // Token is not present, navigate to login page
+      console.log("Token not present");
+      navigate("/login");
+    }
+
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("name", name);
+    login();
+  };
+
+  // Call the function to check for token when the component mounts
+  useEffect(() => {
+    checkTokenAndNavigate();
+  }, []);
 
   const uploadYoutube = async () => {
     try {
@@ -65,7 +97,9 @@ const Home = (props: Props) => {
       if (error.response && error.response.status === 400) {
         setEmbedError("This resource already exists in your resource space!");
       } else {
-        setEmbedError("Something went wrong with uploading your resource. Please try again.");
+        setEmbedError(
+          "Something went wrong with uploading your resource. Please try again."
+        );
       }
       setIsUploading(false);
       setSuccess(false);
@@ -151,7 +185,11 @@ const Home = (props: Props) => {
         </Tabs>
       </Modal>
       {alert &&
-        EmbedAlert({ success: success, errorMessage: embedError, onClose: () => setAlert(false) })}
+        EmbedAlert({
+          success: success,
+          errorMessage: embedError,
+          onClose: () => setAlert(false),
+        })}
     </div>
   );
 };
