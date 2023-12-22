@@ -14,11 +14,11 @@ export const getCourseDetails = async (
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/course?document_id=${documentId}`, 
+      `http://localhost:8080/course?document_id=${documentId}`,
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -37,8 +37,8 @@ export const getResourceInfo = async (
       `http://localhost:8080/resource-info?document_id=${documentId}&query=${query}`,
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -56,8 +56,8 @@ export const deleteResource = async (
       `http://localhost:8080/resource?document_id=${documentId}`,
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -76,8 +76,8 @@ export const editTopic = async (
       `http://localhost:8080/topic?document_id=${documentId}&topic=${topic}`,
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -87,16 +87,16 @@ export const editTopic = async (
   }
 };
 
-export const getPdf = async (filename: string): Promise<AxiosResponse> => {
-  console.log(filename);
+export const getPdf = async (doc_id: string): Promise<AxiosResponse> => {
+  console.log(doc_id);
   try {
     const response = await axios.get(
-      `http://localhost:8080/getPdf?filename=${filename}`,   
+      `http://localhost:8080/getPdf?document_id=${doc_id}`,
       {
-        responseType: 'blob', // Set response type to blo
+        responseType: "blob", // Set response type to blo
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -110,7 +110,11 @@ export const getRecommendedResources = async (
   data: RecommendedResourcesRequestBody
 ): Promise<AxiosResponse> => {
   try {
-    const response = await axios.post("http://localhost:8080/recommend", data);
+    const response = await axios.post("http://localhost:8080/recommend", data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.access_token}`,
+      },
+    });
     return response;
   } catch (error) {
     // Handle any errors here
