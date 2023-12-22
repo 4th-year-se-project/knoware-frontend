@@ -17,8 +17,8 @@ export const getCourseDetails = async (
       `https://knoware.live/course?document_id=${documentId}`, 
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -37,8 +37,8 @@ export const getResourceInfo = async (
       `https://knoware.live/resource-info?document_id=${documentId}&query=${query}`,
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -56,8 +56,8 @@ export const deleteResource = async (
       `https://knoware.live/resource?document_id=${documentId}`,
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -76,8 +76,8 @@ export const editTopic = async (
       `https://knoware.live/topic?document_id=${documentId}&topic=${topic}`,
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -87,16 +87,16 @@ export const editTopic = async (
   }
 };
 
-export const getPdf = async (filename: string): Promise<AxiosResponse> => {
-  console.log(filename);
+export const getPdf = async (doc_id: string): Promise<AxiosResponse> => {
+  console.log(doc_id);
   try {
     const response = await axios.get(
-      `https://knoware.live/getPdf?filename=${filename}`,   
+      `https://knoware.live/getPdf?document_id=${doc_id}`,
       {
-        responseType: 'blob', // Set response type to blo
+        responseType: "blob", // Set response type to blo
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -110,7 +110,11 @@ export const getRecommendedResources = async (
   data: RecommendedResourcesRequestBody
 ): Promise<AxiosResponse> => {
   try {
-    const response = await axios.post("https://knoware.live/recommend", data);
+    const response = await axios.post("https://knoware.live/recommend", data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.access_token}`,
+      },
+    });
     return response;
   } catch (error) {
     // Handle any errors here

@@ -32,6 +32,7 @@ const ResourceBar = ({ docID, topics }: any) => {
       if (docID !== null && docID !== undefined) {
         const response = await getResourceInfo(parseInt(docID, 10), query);
         setResourceInfo(response.data);
+        console.log(response.data.title)
       } else {
         console.error("docID is null or undefined");
       }
@@ -87,7 +88,7 @@ const ResourceBar = ({ docID, topics }: any) => {
   const openPdfInNewWindow = async () => {
     try {
       // Fetch the PDF using the getPdf function
-      const response = await getPdf(resourceInfo.title);
+      const response = await getPdf(docID);
 
       // Create a blob URL for the PDF content
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
@@ -136,7 +137,11 @@ const ResourceBar = ({ docID, topics }: any) => {
 
           <Group mt={20}>
             <p>Open in:</p>
-            {resourceInfo.title?.endsWith(".pdf") ? (
+            {resourceInfo.title?.endsWith(".pdf") ||
+            resourceInfo.title?.endsWith(".ppt") ||
+            resourceInfo.title?.endsWith(".pptx") ||
+            resourceInfo.title?.endsWith(".doc") ||
+            resourceInfo.title?.endsWith(".docx") ? (
               <button
                 className="bg-black text-white px-3 py-1 rounded-md text-sm min-w-32"
                 onClick={openPdfInNewWindow}
