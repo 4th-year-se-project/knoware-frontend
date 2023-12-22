@@ -136,7 +136,11 @@ const ResourceBar = ({ docID, topics }: any) => {
 
           <Group mt={20}>
             <p>Open in:</p>
-            {resourceInfo.title?.endsWith(".pdf") ? (
+            {resourceInfo.title?.endsWith(".pdf") ||
+            resourceInfo.title?.endsWith(".ppt") ||
+            resourceInfo.title?.endsWith(".pptx") ||
+            resourceInfo.title?.endsWith(".doc") ||
+            resourceInfo.title?.endsWith(".docx") ? (
               <button
                 className="bg-black text-white px-3 py-1 rounded-md text-sm min-w-32"
                 onClick={openPdfInNewWindow}
