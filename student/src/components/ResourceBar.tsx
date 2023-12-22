@@ -32,7 +32,6 @@ const ResourceBar = ({ docID, topics }: any) => {
       if (docID !== null && docID !== undefined) {
         const response = await getResourceInfo(parseInt(docID, 10), query);
         setResourceInfo(response.data);
-        console.log(response.data.title)
       } else {
         console.error("docID is null or undefined");
       }
