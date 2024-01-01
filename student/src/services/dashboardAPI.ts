@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from "axios";
 export const getDashboard = async (): Promise<AxiosResponse> => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/dashboard`
+        `https://knoware.live/dashboard`
       );
       return response;
     } catch (error) {
@@ -17,7 +17,7 @@ export const editRating = async (
   ): Promise<AxiosResponse> => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/rating?document_id=${documentId}&rating=${rating}`);
+        `https://knoware.live/rating?document_id=${documentId}&rating=${rating}`);
       return response;
     } catch (error) {
       throw error;
@@ -30,7 +30,7 @@ export const addComment = async (
   ): Promise<AxiosResponse> => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/comment?document_id=${documentId}&comment=${comment}`);
+        `https://knoware.live/comment?document_id=${documentId}&comment=${comment}`);
       return response;
     } catch (error) {
       throw error;
