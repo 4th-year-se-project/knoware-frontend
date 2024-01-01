@@ -96,6 +96,7 @@ const LecturerDashboard = () => {
               onBlur={(event) =>
                 handleComment(resource.id, event.currentTarget.value)
               }
+              size="xs"
             />
           </td>
           <td>
@@ -142,7 +143,7 @@ const LecturerDashboard = () => {
             </Tabs.Tab>
           ))}
         </Tabs.List>
-        <Table style={{ marginTop: "30px" }}>
+        <Table style={{ marginTop: "30px" }} fontSize="xs">
           <thead>
             <tr>
               <th>Title</th>
