@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { Home, SearchResults, ResourceHierarchy, NotFound } from "./pages";
+import { Home, SearchResults, ResourceHierarchy, LecturerDashboard, NotFound } from "./pages";
 import { store } from "./store";
 import { Provider } from "react-redux";
 import Login from "./pages/Login";
@@ -17,6 +17,7 @@ function App() {
           <Route path="/resource-hierarchy" element={ isAuthenticated ? <ResourceHierarchy /> : <Navigate to="/login" /> } />
           <Route path="*" element={<NotFound />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<LecturerDashboard />} />
         </Routes>
       </Router>
     </Provider>
