@@ -8,6 +8,7 @@ import { setQuery } from "../slices/querySlice";
 type Props = {
   long?: boolean;
   initialQuery?: string;
+  onSearch: (query: string) => void;
 };
 
 const SearchBar = (props: Props) => {
@@ -17,13 +18,14 @@ const SearchBar = (props: Props) => {
 
   const handleSearchClick = () => {
     dispatch(setQuery(queryValue));
-    navigate("/search-results");
+    props.onSearch(queryValue);
+    // navigate("/search-results");
   };
 
   return (
     <Group className="flex items-center">
       <TextInput
-        placeholder="Search for resources"
+        placeholder="Enter something you remember from the lecture and we'll find it for you!"
         radius="xl"
         defaultValue={props.initialQuery}
         styles={() => ({
@@ -42,7 +44,7 @@ const SearchBar = (props: Props) => {
           }
         }}
         className={`border-purple-500 focus:border-purple-700 mt-4 ${
-          props.long ? "w-[450px]" : "w-96"
+          props.long ? "w-[650px]" : "w-96"
         }`}
         rightSection={
           <IconSearch

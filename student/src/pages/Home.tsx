@@ -1,157 +1,149 @@
-import React, { useState } from "react";
-import Logo from "../assets/images/logo.svg";
-import {
-  Group,
-  Modal,
-  Tabs,
-  FileInput,
-  rem,
-  TextInput,
-  Progress,
-  Button,
-} from "@mantine/core";
-import { IconFilePlus, IconUpload } from "@tabler/icons-react";
+import { SearchBar } from "../components";
+import HeaderBar from "../components/HeaderBar";
+import Masonry from "react-responsive-masonry";
+import AudioResource from "../components/AudioResource";
+import DefaultResource from "../components/DefaultResource";
+import { Modal, Button, Title, rem, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import SearchBar from "../components/SearchBar";
-import { embedFile, embedYoutube } from "../services/embedAPI";
-import EmbedAlert from "../components/EmbedAlert";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
+import ResourceModal from "../components/ResourceModal";
+import { IconFilePlus, IconPhoto, IconUpload } from "@tabler/icons-react";
+import UploadModal from "../components/UploadModal";
+import { getAllResources } from "../services/resourceAPI";
+import { search } from "../services/searchAPI";
 
-type Props = {};
-
-const Home = (props: Props) => {
+const Home = () => {
   const [opened, { open, close }] = useDisclosure(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [url, setUrl] = useState<string>("");
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(true);
-  const [alert, setAlert] = useState<boolean>(false);
-  const [embedError, setEmbedError] = useState<string>("")
+  const [modalContent, setModalContent] = useState("null");
+  const [resources, setResources] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeResource, setActiveResource] = useState<any>({
+    name: "",
+    image: "",
+    topic: "",
+    course: "",
+    content: "",
+  });
 
-  const uploadYoutube = async () => {
-    try {
-      const data = {
-        video_url: url,
-      };
-      const embed = await embedYoutube(data);
-      setIsUploading(false);
-      setSuccess(true);
-      setAlert(true);
-    } catch (error) {
-      console.error("Error embedding YouTube video:", error);
-      setIsUploading(false);
-      setSuccess(false);
-      setAlert(true);
-    }
+  const handleSearch = useCallback(async (query: string) => {
+    console.log("Search query:", query);
+    setSearchQuery(query);
+    const searchResults = await search({ query: query });
+    setResources(searchResults.data.results);
+  }, []);
+
+  const getResources = async () => {
+    const res = await getAllResources();
+    console.log(res);
+    setResources(res.data.results);
   };
 
-  const uploadFile = async () => {
-    try {
-      if (file) {
-        // Check if file is not null
-        const embed = await embedFile(file);
-        setIsUploading(false);
-        setSuccess(true);
-        setAlert(true);
-      } else {
-        // Handle the case where file is null (e.g., show an error message)
-        console.error("No file selected for embedding.");
-        setIsUploading(false);
-        setSuccess(false);
-        setAlert(true);
-      }
-    } catch (error: any) {
-      console.error("Error embedding file:", error);
+  useEffect(() => {
+    getResources();
+  }, []);
 
-      if (error.response && error.response.status === 400) {
-        setEmbedError("This resource already exists in your resource space!");
-      } else {
-        setEmbedError("Something went wrong with uploading your resource. Please try again.");
-      }
-      setIsUploading(false);
-      setSuccess(false);
-      setAlert(true);
+  const handleResourceClick = (resourceType: string, resource: any) => {
+    setActiveResource({
+      name: resource.title,
+      topic: resource.topic,
+      course: resource.course,
+      image: resource.url || `data:image/png;base64, ${resource.page_image}`,
+      content: resource.content,
+    });
+    setModalContent(resourceType);
+    open();
+  };
+
+  const closeModal = () => {
+    close();
+  };
+
+  const renderModalContent = () => {
+    if (modalContent === "upload") {
+      // Render upload component here
+      return <UploadModal onClose={closeModal} />;
+    } else if (modalContent === "resource") {
+      // Render resource component here
+      return (
+        <ResourceModal
+          name={activeResource.name}
+          topic={activeResource.topic}
+          course={activeResource.course}
+          image={activeResource.image}
+          content={activeResource.content}
+          onClose={closeModal}
+        />
+      );
     }
+    // Default case, no specific content to render
+    return null;
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <img src={Logo} alt="logo" width={400} />
-      {isUploading ? (
-        <>
-          <Progress
-            className="mt-4 mb-4"
-            value={100}
-            striped
-            animate
-            size="xl"
-            radius="xl"
-            color="indigo"
-            label="P A R S I N G"
-            style={{
-              width: "400px",
-              height: "30px",
-            }}
-          />
-          <Button variant="outline" color="red" radius="lg" size="xs">
-            Cancel
-          </Button>
-        </>
-      ) : (
-        <Group className="flex items-center">
-          <IconFilePlus
-            className="opacity-70 mt-4 cursor-pointer"
-            onClick={open}
-          />
-          <SearchBar long={true} />
-        </Group>
-      )}
-      <Modal opened={opened} onClose={close} title="Add a resource" centered>
-        <Tabs color="indigo" defaultValue="upload">
-          <Tabs.List>
-            <Tabs.Tab value="upload">Upload a File</Tabs.Tab>
-            <Tabs.Tab value="url">Paste YouTube URL</Tabs.Tab>
-          </Tabs.List>
-
-          <Tabs.Panel value="upload" pt="xs">
-            <FileInput
-              label="Your file"
-              placeholder="Click to add file"
-              icon={<IconUpload size={rem(14)} />}
-              onChange={(file) => setFile(file)}
-            />
-            <button
-              onClick={() => {
-                setIsUploading(true);
-                uploadFile();
-                close();
+    <div>
+      <HeaderBar onLogoClick={() => null} />
+      <div className="flex items-center justify-between px-40">
+        <div className="flex items-center">
+          <SearchBar long={true} onSearch={handleSearch} />
+        </div>
+        <div className="flex items-center mt-6">
+          <Group
+            onClick={() => handleResourceClick("upload", {})}
+            className="border-4 cursor-pointer border-dashed rounded-xl p-2 text-blue-500 border-blue-500"
+          >
+            <IconPhoto
+              style={{
+                width: rem(52),
+                height: rem(52),
+                color: "var(--mantine-color-dimmed)",
               }}
-              className="mt-4  bg-[#5452FF] hover:bg-[#4744f9] text-white font-semibold py-2 px-4 rounded-md w-full"
-            >
-              Add Resource
-            </button>
-          </Tabs.Panel>
-
-          <Tabs.Panel value="url" pt="xs">
-            <TextInput
-              label="YouTube URL"
-              placeholder="Paste a YouTube URL"
-              onChange={(event) => setUrl(event.target.value)}
+              stroke={1.5}
+              size="6rem"
             />
-            <button
-              onClick={() => {
-                setIsUploading(true);
-                uploadYoutube();
-                close();
-              }}
-              className="mt-4 bg-[#5452FF] hover:bg-[#4744f9] text-white font-semibold py-2 px-4 rounded-md w-full"
-            >
-              Add Resource
-            </button>
-          </Tabs.Panel>
-        </Tabs>
+            <p>Upload a Resource</p>
+          </Group>
+        </div>
+      </div>
+      <Title order={1} className="px-40">
+        {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
+      </Title>
+      <Masonry columnsCount={3} className="px-40">
+        {resources.length > 0 &&
+          resources.map((resource, index) => {
+            if (resource.type === "image") {
+              return (
+                <DefaultResource
+                  key={index}
+                  image={resource.url}
+                  title={resource.title}
+                  onClick={() => handleResourceClick("resource", resource)}
+                />
+              );
+            } else if (resource.type === "audio") {
+              return (
+                <AudioResource
+                  key={index}
+                  onClick={() => handleResourceClick("resource", resource)}
+                  textContent={resource.content}
+                />
+              );
+            } else if (resource.type === "pdf" || resource.type === "youtube") {
+              const imageUrl = `data:image/png;base64, ${resource.page_image}`;
+              return (
+                <DefaultResource
+                  key={index}
+                  image={imageUrl}
+                  title={resource.title}
+                  onClick={() => handleResourceClick("resource", resource)}
+                />
+              );
+            }
+            return null; // handle other resource types if needed
+          })}
+      </Masonry>
+      <Modal opened={opened} onClose={close} centered size="55%">
+        {renderModalContent()}
       </Modal>
-      {alert &&
-        EmbedAlert({ success: success, errorMessage: embedError, onClose: () => setAlert(false) })}
     </div>
   );
 };

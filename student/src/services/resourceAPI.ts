@@ -28,6 +28,23 @@ export const getCourseDetails = async (
   }
 };
 
+export const getAllResources = async (): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/get-all-resources`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    // Handle any errors here
+    throw error;
+  }
+};
+
 export const getResourceInfo = async (
   documentId: number,
   query: string

@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useAuth } from "../login/authContext";
-import { IconLogout } from '@tabler/icons-react';
+import { IconLogout } from "@tabler/icons-react";
 
 type Props = {
   onLogoClick: () => void;
@@ -13,12 +13,12 @@ type Props = {
 
 const HeaderBar = (props: Props) => {
   const query = useSelector((state: any) => state.query.value);
-  const { logout } = useAuth()
+  const { logout } = useAuth();
   const handleLogout = async () => {
     try {
-      logout()
+      logout();
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
   return (
@@ -32,16 +32,18 @@ const HeaderBar = (props: Props) => {
           onClick={props.onLogoClick}
         />
       </div>
-      <div className="flex-1 flex justify-center mb-4">
-        <SearchBar initialQuery={query} />
-      </div>
+
       <Group className="flex items-center">
         <Avatar src={DefaultAvatar} radius="xl" alt="it's me" size="md" />
         <Text color="dimmed" size="md" className="mr-4">
-        {localStorage.getItem("name")}
+          {localStorage.getItem("name")}
         </Text>
+        <IconLogout
+          onClick={handleLogout}
+          color="#4263eb"
+          className="cursor-pointer"
+        />
       </Group>
-      <IconLogout onClick={handleLogout} color="#4263eb" className="cursor-pointer"/>
     </Header>
   );
 };
