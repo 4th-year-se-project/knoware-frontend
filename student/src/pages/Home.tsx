@@ -3,7 +3,7 @@ import HeaderBar from "../components/HeaderBar";
 import Masonry from "react-responsive-masonry";
 import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
-import { Modal, Button, Title, rem, Group } from "@mantine/core";
+import { Modal, Title, rem, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { SetStateAction, useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
@@ -11,11 +11,13 @@ import { IconFilePlus, IconPhoto, IconUpload } from "@tabler/icons-react";
 import UploadModal from "../components/UploadModal";
 import { getAllResources } from "../services/resourceAPI";
 import { search } from "../services/searchAPI";
+import Filter from "../components/Filter";
 
 const Home = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [modalContent, setModalContent] = useState("null");
   const [resources, setResources] = useState<any[]>([]);
+  const [showingResources, setShowingResources] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeResource, setActiveResource] = useState<any>({
     name: "",
@@ -25,17 +27,23 @@ const Home = () => {
     content: "",
   });
 
+  const [fileFormat, setFileFormat] = useState<string | null>(null);
+  const [date, setDate] = useState<string | null>(null);
+  const [topic, setTopic] = useState<string | null>(null);
+  const [label, setLabel] = useState<string | null>(null);
+
   const handleSearch = useCallback(async (query: string) => {
     console.log("Search query:", query);
     setSearchQuery(query);
     const searchResults = await search({ query: query });
-    setResources(searchResults.data.results);
+    setShowingResources(searchResults.data.results);
   }, []);
 
   const getResources = async () => {
     const res = await getAllResources();
     console.log(res);
     setResources(res.data.results);
+    setShowingResources(res.data.results);
   };
 
   useEffect(() => {
@@ -56,6 +64,26 @@ const Home = () => {
 
   const closeModal = () => {
     close();
+  };
+
+  const handleFilter = (fileFormat: any, date: any, topic: any, label: any) => {
+    setFileFormat(fileFormat);
+    setDate(date);
+    setTopic(topic);
+    setLabel(label);
+    // setResources([])
+
+    const filteredResources = resources.filter((resource) => {
+      // const typeMatch = fileFormat ? resource.type === fileFormat : true;
+      // const dateMatch = true;
+      const topicMatch = topic ? resource.course === topic : true;
+      // const labelMatch = label ? resource.label === label : true;
+
+      // return typeMatch || dateMatch || topicMatch || labelMatch;
+      return topicMatch;
+    });
+
+    setShowingResources(filteredResources);
   };
 
   const renderModalContent = () => {
@@ -104,12 +132,13 @@ const Home = () => {
           </Group>
         </div>
       </div>
+      <Filter handleCallback={handleFilter} />
       <Title order={1} className="px-40">
         {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
       </Title>
       <Masonry columnsCount={3} className="px-40">
-        {resources.length > 0 &&
-          resources.map((resource, index) => {
+        {showingResources.length > 0 &&
+          showingResources.map((resource, index) => {
             if (resource.type === "image") {
               return (
                 <DefaultResource
