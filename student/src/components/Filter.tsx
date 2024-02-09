@@ -2,8 +2,7 @@ import { Select, Flex, Button } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { getAllCoursess } from "../services/resourceAPI";
 
-const Filter = ({handleCallback}: any) => {
-
+const Filter = ({ handleCallback }: any) => {
   const [courseList, setCourseList] = useState([]);
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
@@ -11,8 +10,8 @@ const Filter = ({handleCallback}: any) => {
   const [label, setLabel] = useState<string | null>(null);
 
   const handleSearch = () => {
-    if(handleCallback){
-      handleCallback(fileFormat, date, course, label)
+    if (handleCallback) {
+      handleCallback(fileFormat, date, course, label);
     }
   };
 
@@ -39,14 +38,7 @@ const Filter = ({handleCallback}: any) => {
         <Select
           label="File format"
           placeholder=""
-          data={[
-            "pdf",
-            "doc",
-            "ppt",
-            "mp3",
-            "youtube",
-            "audio",
-          ]}
+          data={["pdf", "doc", "ppt", "mp3", "youtube", "audio"]}
           value={fileFormat}
           searchable
           nothingFound="Nothin found..."
@@ -56,7 +48,7 @@ const Filter = ({handleCallback}: any) => {
           label="Relative time"
           placeholder=""
           value={date}
-          data={["1 day", "2 days", "1 week", "1 month"]}
+          data={["1 day ago", "2 days ago", "1 week ago", "1 month ago"]}
           onChange={(value) => setDate(value)}
         />
         <Select
@@ -75,8 +67,17 @@ const Filter = ({handleCallback}: any) => {
           value={label}
           onChange={(value) => setLabel(value)}
         />{" "}
-        <Button variant="filled" className="mt-auto" onClick={handleSearch}>
-          Search
+        <Button
+          variant="filled"
+          className="mt-auto"
+          onClick={handleSearch}
+          style={{
+            zIndex: 1,
+            backgroundColor: "#007BFF",
+            color: "#FFFFFF",
+          }}
+        >
+          Apply filters{" "}
         </Button>
       </Flex>
     </>

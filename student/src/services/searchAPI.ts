@@ -6,7 +6,10 @@ if (localStorage.access_token) {
 }
 
 type SearchRequestBody = {
-  query: string;
+  query: string | null,
+  file_format: String | null,
+  date: String | null,
+  course: String | null
 };
 
 export const search = async (

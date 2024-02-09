@@ -29,21 +29,20 @@ const Home = () => {
 
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
-  const [source, setCourse] = useState<string | null>(null);
+  const [course, setCourse] = useState<string | null>(null);
   const [label, setLabel] = useState<string | null>(null);
 
   const handleSearch = useCallback(async (query: string) => {
     console.log("Search query:", query);
     setSearchQuery(query);
-    const searchResults = await search({ query: query });
-    setShowingResources(searchResults.data.results);
+    const searchResults = await search({ query: query, file_format: fileFormat, date: date, course: course });
+    setResources(searchResults.data.results);
   }, []);
 
   const getResources = async () => {
     const res = await getAllResources();
     console.log(res);
     setResources(res.data.results);
-    setShowingResources(res.data.results);
   };
 
   useEffect(() => {
@@ -66,24 +65,14 @@ const Home = () => {
     close();
   };
 
-  const handleFilter = (fileFormat: any, date: any, course: any, label: any) => {
+  const handleFilter = async (fileFormat: any, date: any, course: any, label: any) => {
     setFileFormat(fileFormat);
     setDate(date);
     setCourse(course);
     setLabel(label);
-    // setResources([])
 
-    const filteredResources = resources.filter((resource) => {
-      // const typeMatch = fileFormat ? resource.type === fileFormat : true;
-      // const dateMatch = true;
-      const topicMatch = course ? resource.topic === course : true;
-      // const labelMatch = label ? resource.label === label : true;
-
-      // return typeMatch || dateMatch || topicMatch || labelMatch;
-      return topicMatch;
-    });
-
-    setShowingResources(filteredResources);
+    const searchResults = await search({ query: searchQuery, file_format: fileFormat, date: date, course: course });
+    setResources(searchResults.data.results);
   };
 
   const renderModalContent = () => {
@@ -137,8 +126,8 @@ const Home = () => {
         {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
       </Title>
       <Masonry columnsCount={3} className="px-40">
-        {showingResources.length > 0 &&
-          showingResources.map((resource, index) => {
+        {resources.length > 0 &&
+          resources.map((resource, index) => {
             if (resource.type === "image") {
               return (
                 <DefaultResource

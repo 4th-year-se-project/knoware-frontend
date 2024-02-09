@@ -138,3 +138,19 @@ export const getRecommendedResources = async (
     throw error;
   }
 };
+
+export const getAllCoursess = async () : Promise<AxiosResponse> => {
+  try{
+    const response = await axios.get(
+      `http://localhost:8080/get-all-courses`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    throw error
+  }
+}
