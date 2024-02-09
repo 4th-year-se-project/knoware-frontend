@@ -1,30 +1,24 @@
 import { Select, Flex, Button } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
-import { getAllTopics } from "../services/resourceAPI";
-import { useDispatch } from "react-redux";
-
-// const topics = Array(100_000)
-//   .fill(0)
-//   .map((_, index) => `Option ${index}`);
+import { useEffect, useState } from "react";
+import { getAllCoursess } from "../services/resourceAPI";
 
 const Filter = ({handleCallback}: any) => {
 
-  const [topicList, setTopicList] = useState([]);
+  const [courseList, setCourseList] = useState([]);
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
-  const [topic, setTopic] = useState<string | null>(null);
+  const [course, setCourse] = useState<string | null>(null);
   const [label, setLabel] = useState<string | null>(null);
 
   const handleSearch = () => {
     if(handleCallback){
-      handleCallback(fileFormat, date, topic, label)
+      handleCallback(fileFormat, date, course, label)
     }
-    console.log(date);
   };
 
   const getTopics = async () => {
-    const response = await getAllTopics();
-    setTopicList(response.data.topics);
+    const response = await getAllCoursess();
+    setCourseList(response.data.topics);
   };
 
   useEffect(() => {
@@ -59,19 +53,19 @@ const Filter = ({handleCallback}: any) => {
           onChange={(value) => setFileFormat(value)}
         />
         <Select
-          label="Date"
+          label="Relative time"
           placeholder=""
           value={date}
           data={["1 day", "2 days", "1 week", "1 month"]}
           onChange={(value) => setDate(value)}
         />
         <Select
-          label="Topic"
+          label="Course"
           placeholder=""
-          data={topicList}
+          data={courseList}
           searchable
-          value={topic}
-          onChange={(value) => setTopic(value)}
+          value={course}
+          onChange={(value) => setCourse(value)}
         />
         <Select
           label="Label"

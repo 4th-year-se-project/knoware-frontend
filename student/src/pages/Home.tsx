@@ -5,9 +5,9 @@ import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
 import { Modal, Title, rem, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
-import { IconFilePlus, IconPhoto, IconUpload } from "@tabler/icons-react";
+import { IconPhoto } from "@tabler/icons-react";
 import UploadModal from "../components/UploadModal";
 import { getAllResources } from "../services/resourceAPI";
 import { search } from "../services/searchAPI";
@@ -29,7 +29,7 @@ const Home = () => {
 
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
-  const [topic, setTopic] = useState<string | null>(null);
+  const [source, setCourse] = useState<string | null>(null);
   const [label, setLabel] = useState<string | null>(null);
 
   const handleSearch = useCallback(async (query: string) => {
@@ -66,17 +66,17 @@ const Home = () => {
     close();
   };
 
-  const handleFilter = (fileFormat: any, date: any, topic: any, label: any) => {
+  const handleFilter = (fileFormat: any, date: any, course: any, label: any) => {
     setFileFormat(fileFormat);
     setDate(date);
-    setTopic(topic);
+    setCourse(course);
     setLabel(label);
     // setResources([])
 
     const filteredResources = resources.filter((resource) => {
       // const typeMatch = fileFormat ? resource.type === fileFormat : true;
       // const dateMatch = true;
-      const topicMatch = topic ? resource.course === topic : true;
+      const topicMatch = course ? resource.topic === course : true;
       // const labelMatch = label ? resource.label === label : true;
 
       // return typeMatch || dateMatch || topicMatch || labelMatch;
