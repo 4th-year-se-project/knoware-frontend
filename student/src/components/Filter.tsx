@@ -2,7 +2,7 @@ import { Select, Flex, Button } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { getAllCoursess } from "../services/resourceAPI";
 
-const Filter = ({ handleCallback }: any) => {
+const Filter = ({ handleCallback, getResourcesCallback }: any) => {
   const [courseList, setCourseList] = useState([]);
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
@@ -12,6 +12,17 @@ const Filter = ({ handleCallback }: any) => {
   const handleSearch = () => {
     if (handleCallback) {
       handleCallback(fileFormat, date, course, label);
+    }
+  };
+
+  const handleResetFilter = () => {
+    setFileFormat("");
+    setDate("");
+    setCourse("");
+    setLabel("");
+
+    if (getResourcesCallback) {
+      getResourcesCallback();
     }
   };
 
@@ -29,14 +40,14 @@ const Filter = ({ handleCallback }: any) => {
       <Flex
         mih={50}
         gap="md"
-        justify="center"
+        justify="between"
         align="flex-start"
         direction="row"
         mb={10}
       >
         {" "}
         <Select
-          label="File format"
+          label="Resource type"
           placeholder=""
           data={["pdf", "doc", "ppt", "mp3", "youtube", "audio"]}
           value={fileFormat}
@@ -45,7 +56,7 @@ const Filter = ({ handleCallback }: any) => {
           onChange={(value) => setFileFormat(value)}
         />
         <Select
-          label="Relative time"
+          label="Modified"
           placeholder=""
           value={date}
           data={["1 day ago", "2 days ago", "1 week ago", "1 month ago"]}
@@ -68,16 +79,28 @@ const Filter = ({ handleCallback }: any) => {
           onChange={(value) => setLabel(value)}
         />{" "}
         <Button
+          onClick={handleSearch}
           variant="filled"
           className="mt-auto"
-          onClick={handleSearch}
           style={{
             zIndex: 1,
             backgroundColor: "#007BFF",
             color: "#FFFFFF",
           }}
         >
-          Apply filters{" "}
+          Apply
+        </Button>
+        <Button
+          onClick={handleResetFilter}
+          variant="link"
+          className="mt-auto"
+          style={{
+            backgroundColor: "#FFFFFF",
+            color: "#FF0000",
+            border: "2px solid #FF0000",
+          }}
+        >
+          Reset
         </Button>
       </Flex>
     </>

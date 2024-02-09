@@ -3,7 +3,7 @@ import HeaderBar from "../components/HeaderBar";
 import Masonry from "react-responsive-masonry";
 import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
-import { Modal, Title, rem, Group } from "@mantine/core";
+import { Modal, Title, rem, Group, Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
@@ -15,6 +15,8 @@ import Filter from "../components/Filter";
 
 const Home = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  // const [filtersOpened, { open: openFilters, close: closeFilters }] = useDisclosure(false);
+  const [filtersOpened, { toggle: toggleFilters }] = useDisclosure(false);
   const [modalContent, setModalContent] = useState("null");
   const [resources, setResources] = useState<any[]>([]);
   const [showingResources, setShowingResources] = useState<any[]>([]);
@@ -35,7 +37,12 @@ const Home = () => {
   const handleSearch = useCallback(async (query: string) => {
     console.log("Search query:", query);
     setSearchQuery(query);
-    const searchResults = await search({ query: query, file_format: fileFormat, date: date, course: course });
+    const searchResults = await search({
+      query: query,
+      file_format: fileFormat,
+      date: date,
+      course: course,
+    });
     setResources(searchResults.data.results);
   }, []);
 
@@ -65,14 +72,28 @@ const Home = () => {
     close();
   };
 
-  const handleFilter = async (fileFormat: any, date: any, course: any, label: any) => {
+  const handleFilter = async (
+    fileFormat: any,
+    date: any,
+    course: any,
+    label: any
+  ) => {
     setFileFormat(fileFormat);
     setDate(date);
     setCourse(course);
     setLabel(label);
 
-    const searchResults = await search({ query: searchQuery, file_format: fileFormat, date: date, course: course });
+    const searchResults = await search({
+      query: searchQuery,
+      file_format: fileFormat,
+      date: date,
+      course: course,
+    });
     setResources(searchResults.data.results);
+  };
+
+  const handleFiltersToggle = () => {
+    toggleFilters();
   };
 
   const renderModalContent = () => {
@@ -102,6 +123,17 @@ const Home = () => {
       <div className="flex items-center justify-between px-40">
         <div className="flex items-center">
           <SearchBar long={true} onSearch={handleSearch} />
+          <Button
+            onClick={handleFiltersToggle}
+            variant="link"
+            className="mt-auto ml-10"
+            style={{
+              backgroundColor: "#007BFF",
+              color: "#FFFFFF",
+            }}
+          >
+            {filtersOpened ? "Hide Filters" : "Filters"}
+          </Button>
         </div>
         <div className="flex items-center mt-6">
           <Group
@@ -121,7 +153,11 @@ const Home = () => {
           </Group>
         </div>
       </div>
-      <Filter handleCallback={handleFilter} />
+      {filtersOpened && (
+        <div className="px-40 mb-4">
+          <Filter handleCallback={handleFilter} getResourcesCallback={getResources}/>
+        </div>
+      )}
       <Title order={1} className="px-40">
         {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
       </Title>
