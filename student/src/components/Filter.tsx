@@ -1,4 +1,4 @@
-import { Select, Flex, Button } from "@mantine/core";
+import { Select, Flex, Button, MultiSelect } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { getAllCoursess } from "../services/resourceAPI";
 
@@ -7,7 +7,7 @@ const Filter = ({ handleCallback, getResourcesCallback }: any) => {
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
   const [course, setCourse] = useState<string | null>(null);
-  const [label, setLabel] = useState<string | null>(null);
+  const [label, setLabel] = useState<string[]>([]);
 
   const handleSearch = () => {
     if (handleCallback) {
@@ -19,7 +19,7 @@ const Filter = ({ handleCallback, getResourcesCallback }: any) => {
     setFileFormat("");
     setDate("");
     setCourse("");
-    setLabel("");
+    setLabel([]);
 
     if (getResourcesCallback) {
       getResourcesCallback();
@@ -70,14 +70,14 @@ const Filter = ({ handleCallback, getResourcesCallback }: any) => {
           value={course}
           onChange={(value) => setCourse(value)}
         />
-        <Select
+        <MultiSelect
           label="Label"
           placeholder=""
-          data={["Favourite", "Not important", ""]}
-          searchable
+          clearable
+          data={["High priority", "Medium priority", "Low priority", "Completed", "In progress"]}
           value={label}
           onChange={(value) => setLabel(value)}
-        />{" "}
+        />
         <Button
           onClick={handleSearch}
           variant="filled"

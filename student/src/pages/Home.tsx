@@ -32,7 +32,7 @@ const Home = () => {
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
   const [course, setCourse] = useState<string | null>(null);
-  const [label, setLabel] = useState<string | null>(null);
+  const [label, setLabel] = useState<string[]>([]);
 
   const handleSearch = useCallback(async (query: string) => {
     console.log("Search query:", query);
@@ -42,6 +42,7 @@ const Home = () => {
       file_format: fileFormat,
       date: date,
       course: course,
+      label: label
     });
     setResources(searchResults.data.results);
   }, []);
@@ -88,6 +89,7 @@ const Home = () => {
       file_format: fileFormat,
       date: date,
       course: course,
+      label: label
     });
     setResources(searchResults.data.results);
   };
