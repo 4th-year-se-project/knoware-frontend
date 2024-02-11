@@ -10,13 +10,15 @@ import ResourceModal from "../components/ResourceModal";
 import { IconFilePlus, IconPhoto, IconUpload } from "@tabler/icons-react";
 import UploadModal from "../components/UploadModal";
 import { getAllResources } from "../services/resourceAPI";
-import { search } from "../services/searchAPI";
+import { search, getSearchRecommendation } from "../services/searchAPI";
+import RecommendedResource from "../components/RecommendedResource";
 
 const Home = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [modalContent, setModalContent] = useState("null");
   const [resources, setResources] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchRecommendation, setSearchRecommendation] = useState<any[]>([]);
   const [activeResource, setActiveResource] = useState<any>({
     name: "",
     image: "",
@@ -30,6 +32,14 @@ const Home = () => {
     setSearchQuery(query);
     const searchResults = await search({ query: query });
     setResources(searchResults.data.results);
+    const searchRecommendedResults = query
+      ? await getSearchRecommendation({
+          query: query,
+        })
+      : "";
+    searchRecommendedResults
+      ? setSearchRecommendation(searchRecommendedResults.data.results)
+      : setSearchRecommendation([]);
   }, []);
 
   const getResources = async () => {
@@ -56,6 +66,16 @@ const Home = () => {
 
   const closeModal = () => {
     close();
+  };
+
+  const [showRecommended, setShowRecommended] = useState(false);
+
+  const handleRecommendButtonClick = () => {
+    setShowRecommended(true);
+  };
+
+  const handleRegularButtonClick = () => {
+    setShowRecommended(false);
   };
 
   const renderModalContent = () => {
@@ -109,7 +129,11 @@ const Home = () => {
           {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
         </Title>
         <Button
-          // onClick={}
+          onClick={
+            showRecommended
+              ? handleRegularButtonClick
+              : handleRecommendButtonClick
+          }
           variant="filled"
           className="mt-auto"
           style={{
@@ -118,10 +142,52 @@ const Home = () => {
             color: "#FFFFFF",
           }}
         >
-          Recommended Resources
+          {showRecommended ? "Hide Recommendations" : "Show Recommendation"}
         </Button>
       </div>
       <Masonry columnsCount={3} className="px-40">
+        {showRecommended
+          ? searchRecommendation.map((recommendedResource, index) => {
+              if (recommendedResource.type === "image") {
+                return (
+                  <RecommendedResource
+                    key={index}
+                    image={recommendedResource.url}
+                    title={recommendedResource.title}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                  />
+                );
+              } else if (recommendedResource.type === "audio") {
+                return (
+                  <AudioResource
+                    key={index}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                    textContent={recommendedResource.content}
+                  />
+                );
+              } else if (
+                recommendedResource.type === "pdf" ||
+                recommendedResource.type === "youtube"
+              ) {
+                const imageUrl = `data:image/png;base64, ${recommendedResource.page_image}`;
+                return (
+                  <RecommendedResource
+                    key={index}
+                    image={imageUrl}
+                    title={recommendedResource.title}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                  />
+                );
+              }
+              return null; // handle other resource types if needed
+            })
+          : " "}
         {resources.length > 0 &&
           resources.map((resource, index) => {
             if (resource.type === "image") {

@@ -21,12 +21,12 @@ function RecommendedResource(props: Props) {
     className="m-6 rounded-md transition-transform transform hover:scale-105 duration-300 ease-in-out">
       <Badge
         color="purple"
-        className="absolute top-0 right-0 z-10 mt-2 mr-0 roun"
+        className="absolute right-0 z-10 bottom-0 mr-0 roun"
         style={badgeStyle}
       >
         Recommended
       </Badge>
-      <Title order={4} className="z-1">
+      <Title order={4} >
         {props.title}
       </Title>
       <div
