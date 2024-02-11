@@ -104,9 +104,23 @@ const Home = () => {
           </Group>
         </div>
       </div>
-      <Title order={1} className="px-40">
-        {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
-      </Title>
+      <div className="flex justify-between mr-40 mt-10">
+        <Title order={1} className="px-40">
+          {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
+        </Title>
+        <Button
+          // onClick={}
+          variant="filled"
+          className="mt-auto"
+          style={{
+            zIndex: 1,
+            backgroundColor: "#A855F7",
+            color: "#FFFFFF",
+          }}
+        >
+          Recommended Resources
+        </Button>
+      </div>
       <Masonry columnsCount={3} className="px-40">
         {resources.length > 0 &&
           resources.map((resource, index) => {
