@@ -7,7 +7,7 @@ const Filter = ({ handleCallback, getResourcesCallback }: any) => {
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
   const [course, setCourse] = useState<string | null>(null);
-  const [label, setLabel] = useState<string[]>([]);
+  const [label, setLabel] = useState<string | null>(null);
 
   const handleSearch = () => {
     if (handleCallback) {
@@ -19,7 +19,7 @@ const Filter = ({ handleCallback, getResourcesCallback }: any) => {
     setFileFormat("");
     setDate("");
     setCourse("");
-    setLabel([]);
+    setLabel("");
 
     if (getResourcesCallback) {
       getResourcesCallback();
@@ -70,11 +70,11 @@ const Filter = ({ handleCallback, getResourcesCallback }: any) => {
           value={course}
           onChange={(value) => setCourse(value)}
         />
-        <MultiSelect
-          label="Label"
+        <Select
+          label="Status"
           placeholder=""
           clearable
-          data={["High priority", "Medium priority", "Low priority", "Completed", "In progress"]}
+          data={["High priority", "Medium priority", "Low priority"]}
           value={label}
           onChange={(value) => setLabel(value)}
         />
