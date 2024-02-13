@@ -154,3 +154,12 @@ export const getAllCoursess = async () : Promise<AxiosResponse> => {
     throw error
   }
 }
+
+export const editResourceLabel = async (document_id: number , label: string | null) : Promise<AxiosResponse> => {
+  try {
+    const response = await axios.put(`http://localhost:8080/update-label?document_id=${document_id}&label=${label}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}

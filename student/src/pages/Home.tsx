@@ -27,12 +27,14 @@ const Home = () => {
     topic: "",
     course: "",
     content: "",
+    label: "",
+    id: "",
   });
 
   const [fileFormat, setFileFormat] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
   const [course, setCourse] = useState<string | null>(null);
-  const [label, setLabel] = useState<string[]>([]);
+  const [label, setLabel] = useState<string | null>(null);
 
   const handleSearch = useCallback(async (query: string) => {
     console.log("Search query:", query);
@@ -42,7 +44,7 @@ const Home = () => {
       file_format: fileFormat,
       date: date,
       course: course,
-      label: label
+      label: label,
     });
     setResources(searchResults.data.results);
   }, []);
@@ -64,6 +66,8 @@ const Home = () => {
       course: resource.course,
       image: resource.url || `data:image/png;base64, ${resource.page_image}`,
       content: resource.content,
+      label: resource.label,
+      id: resource.doc_id,
     });
     setModalContent(resourceType);
     open();
@@ -111,6 +115,8 @@ const Home = () => {
           course={activeResource.course}
           image={activeResource.image}
           content={activeResource.content}
+          label={activeResource.label}
+          id={activeResource.id}
           onClose={closeModal}
         />
       );
