@@ -5,11 +5,14 @@ import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
 import { Modal, Button, Title, rem, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
-import { IconFilePlus, IconPhoto, IconUpload } from "@tabler/icons-react";
+import { IconPhoto } from "@tabler/icons-react";
 import UploadModal from "../components/UploadModal";
-import { getAllResources } from "../services/resourceAPI";
+import {
+  getAllResources,
+  getRecommendedResources,
+} from "../services/resourceAPI";
 import { search, getSearchRecommendation } from "../services/searchAPI";
 import RecommendedResource from "../components/RecommendedResource";
 
@@ -19,6 +22,8 @@ const Home = () => {
   const [resources, setResources] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchRecommendation, setSearchRecommendation] = useState<any[]>([]);
+  const [defaultRecommendation, setDefaultRecommendation] = useState<any[]>([]);
+  const [showRecommendation, setShowRecommendation] = useState(false);
   const [activeResource, setActiveResource] = useState<any>({
     name: "",
     image: "",
@@ -44,12 +49,20 @@ const Home = () => {
 
   const getResources = async () => {
     const res = await getAllResources();
-    console.log(res);
     setResources(res.data.results);
+  };
+
+  const getDefaultRecommendation = async () => {
+    const ids = resources.map((item: { doc_id: any }) => item.doc_id);
+    const res = await getRecommendedResources({ document_ids: ids });
+    console.log("this is default rec");
+    setDefaultRecommendation(res.data.results);
+    console.log(defaultRecommendation);
   };
 
   useEffect(() => {
     getResources();
+    getDefaultRecommendation();
   }, []);
 
   const handleResourceClick = (resourceType: string, resource: any) => {
@@ -68,14 +81,12 @@ const Home = () => {
     close();
   };
 
-  const [showRecommended, setShowRecommended] = useState(false);
-
   const handleRecommendButtonClick = () => {
-    setShowRecommended(true);
+    setShowRecommendation(true);
   };
 
   const handleRegularButtonClick = () => {
-    setShowRecommended(false);
+    setShowRecommendation(false);
   };
 
   const renderModalContent = () => {
@@ -130,7 +141,7 @@ const Home = () => {
         </Title>
         <Button
           onClick={
-            showRecommended
+            showRecommendation
               ? handleRegularButtonClick
               : handleRecommendButtonClick
           }
@@ -142,11 +153,53 @@ const Home = () => {
             color: "#FFFFFF",
           }}
         >
-          {showRecommended ? "Hide Recommendations" : "Show Recommendation"}
+          {showRecommendation ? "Hide Recommendations" : "Show Recommendation"}
         </Button>
       </div>
       <Masonry columnsCount={3} className="px-40">
-        {showRecommended
+        {showRecommendation && searchQuery === null
+          ? defaultRecommendation.map((recommendedResource, index) => {
+              if (recommendedResource.type === "image") {
+                return (
+                  <RecommendedResource
+                    key={index}
+                    image={recommendedResource.url}
+                    title={recommendedResource.title}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                  />
+                );
+              } else if (recommendedResource.type === "audio") {
+                return (
+                  <AudioResource
+                    key={index}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                    textContent={recommendedResource.content}
+                  />
+                );
+              } else if (
+                recommendedResource.type === "pdf" ||
+                recommendedResource.type === "youtube"
+              ) {
+                const imageUrl = `data:image/png;base64, ${recommendedResource.page_image}`;
+                return (
+                  <RecommendedResource
+                    key={index}
+                    image={imageUrl}
+                    title={recommendedResource.title}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                  />
+                );
+              }
+              return null;
+            })
+          : ""}
+        {showRecommendation && searchRecommendation !== null
           ? searchRecommendation.map((recommendedResource, index) => {
               if (recommendedResource.type === "image") {
                 return (
@@ -185,9 +238,9 @@ const Home = () => {
                   />
                 );
               }
-              return null; // handle other resource types if needed
+              return null;
             })
-          : " "}
+          : ""}
         {resources.length > 0 &&
           resources.map((resource, index) => {
             if (resource.type === "image") {
