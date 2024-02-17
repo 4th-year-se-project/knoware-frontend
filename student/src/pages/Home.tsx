@@ -19,7 +19,6 @@ const Home = () => {
   const [filtersOpened, { toggle: toggleFilters }] = useDisclosure(false);
   const [modalContent, setModalContent] = useState("null");
   const [resources, setResources] = useState<any[]>([]);
-  const [showingResources, setShowingResources] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeResource, setActiveResource] = useState<any>({
     name: "",

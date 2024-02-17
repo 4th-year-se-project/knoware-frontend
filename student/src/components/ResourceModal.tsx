@@ -57,11 +57,13 @@ function ResourceModal(props: Props) {
                 <Flex direction="column">
                   <Select
                     data={
+                      label ?
                       label === "High priority"
                         ? ["Medium priority", "Low priority"]
                         : label === "Medium priority"
                         ? ["High priority", "Low priority"]
                         : ["High priority", "Medium priority"]
+                        : ["High priority", "Medium priority", "Low priority"]
                     }
                     value={editableLabel}
                     onChange={(value) => setEditableLabel(value)}
@@ -102,9 +104,20 @@ function ResourceModal(props: Props) {
             ) : (
               <>
                 <div className="flex mt-auto mb-auto">
-                  <Badge variant="filled" fullWidth className="mt-auto mb-auto">
-                    {label}
-                  </Badge>
+                  {label ? (
+                    <Badge
+                      variant="filled"
+                      fullWidth
+                      className="mt-auto mb-auto"
+                    >
+                      {label}
+                    </Badge>
+                  ) : (
+                    <Badge variant="light" className="mt-auto mb-auto">
+                      Add label
+                    </Badge>
+                  )}
+
                   <Button
                     onClick={enterEditMode}
                     style={{ marginLeft: 4 }}
