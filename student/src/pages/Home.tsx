@@ -52,17 +52,21 @@ const Home = () => {
     setResources(res.data.results);
   };
 
-  const getDefaultRecommendation = async () => {
-    const ids = resources.map((item: { doc_id: any }) => item.doc_id);
-    const res = await getRecommendedResources({ document_ids: ids });
-    console.log("this is default rec");
-    setDefaultRecommendation(res.data.results);
-    console.log(defaultRecommendation);
-  };
+  useEffect(() => {
+    async function getDefaultRecommendation() {
+      try {
+        const ids = resources.map((item: { doc_id: any }) => item.doc_id);
+        const res = await getRecommendedResources({ document_ids: ids });
+        setDefaultRecommendation(res.data.results);
+      } catch (error) {
+        console.error("Error fetching default recommendation:", error);
+      }
+    }
+    getDefaultRecommendation();
+  }, [resources]);
 
   useEffect(() => {
     getResources();
-    getDefaultRecommendation();
   }, []);
 
   const handleResourceClick = (resourceType: string, resource: any) => {
@@ -157,20 +161,9 @@ const Home = () => {
         </Button>
       </div>
       <Masonry columnsCount={3} className="px-40">
-        {showRecommendation && searchQuery === null
-          ? defaultRecommendation.map((recommendedResource, index) => {
-              if (recommendedResource.type === "image") {
-                return (
-                  <RecommendedResource
-                    key={index}
-                    image={recommendedResource.url}
-                    title={recommendedResource.title}
-                    onClick={() =>
-                      handleResourceClick("resource", recommendedResource)
-                    }
-                  />
-                );
-              } else if (recommendedResource.type === "audio") {
+        {showRecommendation && searchQuery === ""
+          ? defaultRecommendation?.map((recommendedResource, index) => {
+              if (recommendedResource.type === "audio") {
                 return (
                   <AudioResource
                     key={index}
