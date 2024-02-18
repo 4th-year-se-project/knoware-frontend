@@ -28,7 +28,6 @@ const LecturerDashboard = () => {
     try {
       const response = await getDashboard();
       setResources(response.data);
-      console.log("component rerender");
     } catch (error) {
       console.error("Error getting resource info:", error);
     }
@@ -166,7 +165,6 @@ const LecturerDashboard = () => {
   ) => {
     await addComment(document_id, value);
     await handleSuccessMessage(courseIndex, rowIndex);
-    console.log(successMessages);
     getLecturerDashboard();
 
     setTimeout(() => {
@@ -174,7 +172,6 @@ const LecturerDashboard = () => {
         courseIndex: "",
         resourceIndex: "",
       });
-      console.log(successMessages);
     }, 1000);
 
     setTimeout(() => {
@@ -198,7 +195,7 @@ const LecturerDashboard = () => {
         <Table style={{ marginTop: "30px" }} fontSize="xs">
           <thead>
             <tr>
-              <th>Title</th>
+              <th>Resource name</th>
               <th>Topic</th>
               <th>Popularity</th>
               <th>Rating</th>
