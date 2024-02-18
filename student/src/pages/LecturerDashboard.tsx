@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Tabs, Rating, Textarea } from "@mantine/core";
+import { Table, Tabs, Rating, Textarea, Button } from "@mantine/core";
 import Logo from "../assets/images/logo.svg";
 import { getDashboard, editRating, addComment } from "../services/dashboardAPI";
 import { IconExternalLink } from "@tabler/icons-react";
@@ -10,6 +10,10 @@ const LecturerDashboard = () => {
 
   const [activeTab, setActiveTab] = useState<string | null>("0");
   const [rows, setRows] = useState();
+  const [successMessages, setSuccessMessages] = useState<any>({
+    courseIndex: "",
+    resourceIndex: "",
+  });
 
   useEffect(() => {
     getLecturerDashboard();
@@ -24,6 +28,7 @@ const LecturerDashboard = () => {
     try {
       const response = await getDashboard();
       setResources(response.data);
+      console.log("component rerender");
     } catch (error) {
       console.error("Error getting resource info:", error);
     }
@@ -60,7 +65,7 @@ const LecturerDashboard = () => {
   const generateRows = (index: number) => {
     const selectedCourse: any = resources?.[index];
     if (selectedCourse) {
-      return selectedCourse.resources.map((resource: any) => (
+      return selectedCourse.resources.map((resource: any, rowIndex: number) => (
         <tr key={resource.id}>
           <td
             style={{
@@ -94,10 +99,28 @@ const LecturerDashboard = () => {
               maxRows={2}
               defaultValue={resource.comment}
               onBlur={(event) =>
-                handleComment(resource.id, event.currentTarget.value)
+                handleComment(
+                  index,
+                  resource.id,
+                  rowIndex,
+                  event.currentTarget.value
+                )
               }
               size="xs"
             />
+            {/* {successMessages[rowIndex] === rowIndex && ( */}
+            {successMessages.courseIndex === index &&
+              successMessages.resourceIndex === rowIndex && (
+                <div
+                  style={{
+                    color: "green",
+                    opacity: 1,
+                    transition: "opacity 1s ease-in-out",
+                  }}
+                >
+                  Success! Comment submitted.
+                </div>
+              )}
           </td>
           <td>
             <IconExternalLink
@@ -125,9 +148,38 @@ const LecturerDashboard = () => {
     getLecturerDashboard();
   };
 
-  const handleComment = async (document_id: any, value: any) => {
+  const handleSuccessMessage = async (
+    courseIndex: number,
+    resourceIndex: number
+  ) => {
+    setSuccessMessages({
+      courseIndex: courseIndex,
+      resourceIndex: resourceIndex,
+    });
+  };
+
+  const handleComment = async (
+    courseIndex: number,
+    document_id: any,
+    rowIndex: number,
+    value: any
+  ) => {
     await addComment(document_id, value);
+    await handleSuccessMessage(courseIndex, rowIndex);
+    console.log(successMessages);
     getLecturerDashboard();
+
+    setTimeout(() => {
+      setSuccessMessages({
+        courseIndex: "",
+        resourceIndex: "",
+      });
+      console.log(successMessages);
+    }, 1000);
+
+    setTimeout(() => {
+      getLecturerDashboard();
+    }, 2000);
   };
 
   return (
