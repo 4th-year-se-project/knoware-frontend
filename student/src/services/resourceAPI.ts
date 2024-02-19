@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
 import authToken from "../login/authToken";
 
 if (localStorage.access_token) {
@@ -138,3 +138,35 @@ export const getRecommendedResources = async (
     throw error;
   }
 };
+
+export const getAllComments = async (
+  doc_id: number
+): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.get(`http://localhost:8080/get_all_comments?document_id=${doc_id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.access_token}`,
+      },
+    });
+    return response
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const addEmbeddingComment = async (
+  doc_id: number,
+  embedding_id: number,
+  comment: string,
+): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.post(`http://localhost:8080/add_embedding_comment?document_id=${doc_id}&embedding_id=${embedding_id}&comment=${comment}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.access_token}`,
+      },
+    });
+    return response
+  } catch (error) {
+    throw error;
+  }
+}
