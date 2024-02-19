@@ -1,7 +1,6 @@
-import React, { useCallback } from "react";
-import { Group, TextInput } from "@mantine/core";
+import React, { useState, useEffect } from "react";
+import { Group, Autocomplete } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setQuery } from "../slices/querySlice";
 
@@ -12,21 +11,33 @@ type Props = {
 };
 
 const SearchBar = (props: Props) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [queryValue, setQueryValue] = React.useState("");
+  const [queryValue, setQueryValue] = useState("");
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+  useEffect(() => {
+    const storedSearchHistory = localStorage.getItem("searchHistory");
+    if (storedSearchHistory) {
+      setSearchHistory(JSON.parse(storedSearchHistory));
+    }
+  }, []);
 
   const handleSearchClick = () => {
+    const updatedHistory = [queryValue, ...searchHistory.filter((q) => q !== queryValue)].slice(0, 5);
+    localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+    setSearchHistory(updatedHistory);
+
     dispatch(setQuery(queryValue));
     props.onSearch(queryValue);
-    // navigate("/search-results");
   };
 
   return (
     <Group className="flex items-center">
-      <TextInput
+      <Autocomplete
         placeholder="Enter something you remember from the lecture and we'll find it for you!"
+        data={searchHistory}
         radius="xl"
+        limit={5}
         defaultValue={props.initialQuery}
         styles={() => ({
           input: {
