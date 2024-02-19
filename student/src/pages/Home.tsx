@@ -3,20 +3,27 @@ import HeaderBar from "../components/HeaderBar";
 import Masonry from "react-responsive-masonry";
 import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
-import { Modal, Button, Title, rem, Group } from "@mantine/core";
+import { Modal, Button, Title, rem, Group, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
-import { IconFilePlus, IconPhoto, IconUpload } from "@tabler/icons-react";
+import { IconPhoto } from "@tabler/icons-react";
 import UploadModal from "../components/UploadModal";
-import { getAllResources } from "../services/resourceAPI";
-import { search } from "../services/searchAPI";
+import {
+  getAllResources,
+  getRecommendedResources,
+} from "../services/resourceAPI";
+import { search, getSearchRecommendation } from "../services/searchAPI";
+import RecommendedResource from "../components/RecommendedResource";
 
 const Home = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [modalContent, setModalContent] = useState("null");
   const [resources, setResources] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchRecommendation, setSearchRecommendation] = useState<any[]>([]);
+  const [defaultRecommendation, setDefaultRecommendation] = useState<any[]>([]);
+  const [showRecommendation, setShowRecommendation] = useState(false);
   const [activeResource, setActiveResource] = useState<any>({
     name: "",
     image: "",
@@ -30,13 +37,33 @@ const Home = () => {
     setSearchQuery(query);
     const searchResults = await search({ query: query });
     setResources(searchResults.data.results);
+    const searchRecommendedResults = query
+      ? await getSearchRecommendation({
+          query: query,
+        })
+      : "";
+    searchRecommendedResults
+      ? setSearchRecommendation(searchRecommendedResults.data.results)
+      : setSearchRecommendation([]);
   }, []);
 
   const getResources = async () => {
     const res = await getAllResources();
-    console.log(res);
     setResources(res.data.results);
   };
+
+  useEffect(() => {
+    async function getDefaultRecommendation() {
+      try {
+        const ids = resources.map((item: { doc_id: any }) => item.doc_id);
+        const res = await getRecommendedResources({ document_ids: ids });
+        setDefaultRecommendation(res.data.results);
+      } catch (error) {
+        console.error("Error fetching default recommendation:", error);
+      }
+    }
+    getDefaultRecommendation();
+  }, [resources]);
 
   useEffect(() => {
     getResources();
@@ -56,6 +83,14 @@ const Home = () => {
 
   const closeModal = () => {
     close();
+  };
+
+  const handleRecommendButtonClick = () => {
+    setShowRecommendation(true);
+  };
+
+  const handleRegularButtonClick = () => {
+    setShowRecommendation(false);
   };
 
   const renderModalContent = () => {
@@ -104,10 +139,105 @@ const Home = () => {
           </Group>
         </div>
       </div>
-      <Title order={1} className="px-40">
-        {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
-      </Title>
+      <div className="flex justify-between mr-40 mt-10">
+        <Title order={1} className="px-40">
+          {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
+        </Title>
+        <Tooltip label="Click here to discover resources recommended from your peers">
+          <Button
+            onClick={
+              showRecommendation
+                ? handleRegularButtonClick
+                : handleRecommendButtonClick
+            }
+            variant="filled"
+            className="mt-auto"
+            style={{
+              zIndex: 1,
+              backgroundColor: "#A855F7",
+              color: "#FFFFFF",
+            }}
+          >
+            {showRecommendation
+              ? "Hide Recommendations"
+              : "Show Recommendation"}
+          </Button>
+        </Tooltip>
+      </div>
       <Masonry columnsCount={3} className="px-40">
+        {showRecommendation && searchQuery === ""
+          ? defaultRecommendation?.map((recommendedResource, index) => {
+              if (recommendedResource.type === "audio") {
+                return (
+                  <AudioResource
+                    key={index}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                    textContent={recommendedResource.content}
+                  />
+                );
+              } else if (
+                recommendedResource.type === "pdf" ||
+                recommendedResource.type === "youtube"
+              ) {
+                const imageUrl = `data:image/png;base64, ${recommendedResource.page_image}`;
+                return (
+                  <RecommendedResource
+                    key={index}
+                    image={imageUrl}
+                    title={recommendedResource.title}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                  />
+                );
+              }
+              return null;
+            })
+          : ""}
+        {showRecommendation && searchRecommendation !== null
+          ? searchRecommendation.map((recommendedResource, index) => {
+              if (recommendedResource.type === "image") {
+                return (
+                  <RecommendedResource
+                    key={index}
+                    image={recommendedResource.url}
+                    title={recommendedResource.title}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                  />
+                );
+              } else if (recommendedResource.type === "audio") {
+                return (
+                  <AudioResource
+                    key={index}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                    textContent={recommendedResource.content}
+                  />
+                );
+              } else if (
+                recommendedResource.type === "pdf" ||
+                recommendedResource.type === "youtube"
+              ) {
+                const imageUrl = `data:image/png;base64, ${recommendedResource.page_image}`;
+                return (
+                  <RecommendedResource
+                    key={index}
+                    image={imageUrl}
+                    title={recommendedResource.title}
+                    onClick={() =>
+                      handleResourceClick("resource", recommendedResource)
+                    }
+                  />
+                );
+              }
+              return null;
+            })
+          : ""}
         {resources.length > 0 &&
           resources.map((resource, index) => {
             if (resource.type === "image") {
