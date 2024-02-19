@@ -3,7 +3,7 @@ import HeaderBar from "../components/HeaderBar";
 import Masonry from "react-responsive-masonry";
 import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
-import { Modal, Button, Title, rem, Group } from "@mantine/core";
+import { Modal, Button, Title, rem, Group, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
@@ -143,22 +143,26 @@ const Home = () => {
         <Title order={1} className="px-40">
           {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
         </Title>
-        <Button
-          onClick={
-            showRecommendation
-              ? handleRegularButtonClick
-              : handleRecommendButtonClick
-          }
-          variant="filled"
-          className="mt-auto"
-          style={{
-            zIndex: 1,
-            backgroundColor: "#A855F7",
-            color: "#FFFFFF",
-          }}
-        >
-          {showRecommendation ? "Hide Recommendations" : "Show Recommendation"}
-        </Button>
+        <Tooltip label="Click here to discover resources recommended from your peers">
+          <Button
+            onClick={
+              showRecommendation
+                ? handleRegularButtonClick
+                : handleRecommendButtonClick
+            }
+            variant="filled"
+            className="mt-auto"
+            style={{
+              zIndex: 1,
+              backgroundColor: "#A855F7",
+              color: "#FFFFFF",
+            }}
+          >
+            {showRecommendation
+              ? "Hide Recommendations"
+              : "Show Recommendation"}
+          </Button>
+        </Tooltip>
       </div>
       <Masonry columnsCount={3} className="px-40">
         {showRecommendation && searchQuery === ""
