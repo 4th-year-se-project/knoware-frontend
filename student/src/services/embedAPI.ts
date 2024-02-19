@@ -42,7 +42,8 @@ export const embedYoutube = async (
   }
 };
 
-export const embedFile = async (file: File): Promise<AxiosResponse> => {
+export const embedFile = async (file: File, abortSignal: AbortSignal
+  ): Promise<AxiosResponse> => {
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -59,6 +60,7 @@ export const embedFile = async (file: File): Promise<AxiosResponse> => {
             "Content-Type": "multipart/form-data",
             "Authorization": `Bearer ${localStorage.access_token}`
           },
+          signal: abortSignal, 
         }
       );
       return response;

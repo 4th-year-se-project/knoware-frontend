@@ -1,15 +1,71 @@
+// import React, { useState, useEffect } from "react";
+// import {
+//   Table,
+//   Tabs,
+//   Rating,
+//   Textarea,
+//   Button,
+//   Container,
+//   Paper,
+//   Modal
+// } from "@mantine/core";
+// import Logo from "../assets/images/logo.svg";
+// import {
+//   getDashboard,
+//   editRating,
+//   addComment,
+//   getCourses,
+// } from "../services/dashboardAPI";
+// import { IconExternalLink } from "@tabler/icons-react";
+// import { getPdf } from "../services/resourceAPI";
+
+// const LecturerDashboard = () => {
+//   const [resources, setResources] = useState([]);
+
+//   const [activeTab, setActiveTab] = useState<string | null>("0");
+//   const [rows, setRows] = useState();
+//   const [courses, getCourses] = useState([]);
+
+//   useEffect(() => {
+//     getLecturerDashboard();
+//     handleTabChange(activeTab);
+//   }, []);
+
+//   useEffect(() => {
+//     handleTabChange(activeTab);
+//   }, [resources]);
+
 import React, { useState, useEffect } from "react";
-import { Table, Tabs, Rating, Textarea } from "@mantine/core";
+import {
+  Table,
+  Tabs,
+  Rating,
+  Textarea,
+  Button,
+  Container,
+  Paper,
+  Modal,
+  Title,
+  Text,
+} from "@mantine/core";
 import Logo from "../assets/images/logo.svg";
-import { getDashboard, editRating, addComment } from "../services/dashboardAPI";
+import {
+  getDashboard,
+  editRating,
+  addComment,
+  getCourses,
+} from "../services/dashboardAPI";
 import { IconExternalLink } from "@tabler/icons-react";
 import { getPdf } from "../services/resourceAPI";
+import CourseForm from "../components/CourseForm"; // Import your CourseForm component
 
 const LecturerDashboard = () => {
   const [resources, setResources] = useState([]);
-
   const [activeTab, setActiveTab] = useState<string | null>("0");
   const [rows, setRows] = useState();
+  const [courses, setCourses] = useState([]);
+  const [showAddCourseModal, setShowAddCourseModal] = useState(false); // State for showing/hiding Add Course modal
+  const [showCoursesModal, setShowCoursesModal] = useState(false); // State for showing/hiding Add Course modal
 
   useEffect(() => {
     getLecturerDashboard();
@@ -26,6 +82,25 @@ const LecturerDashboard = () => {
       setResources(response.data);
     } catch (error) {
       console.error("Error getting resource info:", error);
+    }
+  };
+
+  // const getCoursesList = async () => {
+  //   try {
+  //     const response = await getCourses();
+  //     setCourses(response.data);
+  //   } catch (error) {
+  //     console.error("Error getting courses:", error);
+  //   }
+  // };
+
+  const getCoursesList = async () => {
+    try {
+      const response = await getCourses();
+      console.log("Courses response:", response.data); // Add this line to log the response
+      setCourses(response.data);
+    } catch (error) {
+      console.error("Error getting courses:", error);
     }
   };
 
@@ -132,8 +207,32 @@ const LecturerDashboard = () => {
 
   return (
     <div style={{ padding: "20px", margin: "20px" }}>
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+      <div
+        style={{ textAlign: "center", marginBottom: "20px" }}
+        className="flex place-items-center justify-between"
+      >
         <img src={Logo} alt="logo" width={100} className="cursor-pointer" />
+        <div className="flex">
+          <Button
+            className="bg-blue-500 hover:bg-blue-600"
+            onClick={() => {
+              setShowAddCourseModal(false);
+              setShowCoursesModal(true);
+              getCoursesList(); // Fetch existing courses when "View Your Courses" is clicked
+            }} // Show existing courses
+          >
+            View Your Courses
+          </Button>
+          <Button
+            className="ml-6 bg-blue-500 hover:bg-blue-600"
+            onClick={() => {
+              setShowCoursesModal(false);
+              setShowAddCourseModal(true);
+            }} // Show Add Course form
+          >
+            Add New Course
+          </Button>
+        </div>
       </div>
       <Tabs value={activeTab} onTabChange={handleTabChange}>
         <Tabs.List>
@@ -157,6 +256,39 @@ const LecturerDashboard = () => {
           <tbody>{rows}</tbody>
         </Table>
       </Tabs>
+
+      <Modal
+        opened={showAddCourseModal || showCoursesModal}
+        onClose={() => {
+          setShowAddCourseModal(false);
+          setShowCoursesModal(false);
+        }}
+        size="70%"
+      >
+        {showAddCourseModal ? (
+          <CourseForm />
+        ) : (
+          <Container>
+            {courses.map((course: any) => (
+              <Paper
+                key={course.id}
+                radius="md"
+                shadow="sm"
+                className="mb-5 p-5"
+              >
+                <Title order={4}>
+                  {course.courseName} | {course.courseCode}
+                </Title>
+                {course.topics.map((topic: any, topicIndex: number) => (
+                  <Paper key={topicIndex} radius="md" className="pl-5 m-3">
+                    <Text>{topic}</Text>
+                  </Paper>
+                ))}
+              </Paper>
+            ))}
+          </Container>
+        )}
+      </Modal>
     </div>
   );
 };

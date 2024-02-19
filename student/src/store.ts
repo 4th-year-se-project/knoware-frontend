@@ -1,10 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import queryReducer from "./slices/querySlice";
+import fileStatusReducer from "./slices/fileStatusSlice";
 
 export const store = configureStore({
   reducer: {
     query: queryReducer,
+    fileStatus: fileStatusReducer,
   },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

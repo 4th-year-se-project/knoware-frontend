@@ -23,9 +23,14 @@ const SearchBar = (props: Props) => {
   }, []);
 
   const handleSearchClick = () => {
-    const updatedHistory = [queryValue, ...searchHistory.filter((q) => q !== queryValue)].slice(0, 5);
-    localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
-    setSearchHistory(updatedHistory);
+    if (queryValue !== "") {
+      const updatedHistory = [
+        queryValue,
+        ...searchHistory.filter((q) => q !== queryValue),
+      ].slice(0, 5);
+      localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+      setSearchHistory(updatedHistory);
+    }
 
     dispatch(setQuery(queryValue));
     props.onSearch(queryValue);
