@@ -176,7 +176,7 @@ const LecturerDashboard = () => {
 
     setTimeout(() => {
       getLecturerDashboard();
-    }, 2000);
+    }, 4000);
   };
 
   return (
@@ -192,7 +192,7 @@ const LecturerDashboard = () => {
             </Tabs.Tab>
           ))}
         </Tabs.List>
-        <Table style={{ marginTop: "30px" }} fontSize="xs">
+        <Table striped style={{ marginTop: "30px" }} fontSize="xs">
           <thead>
             <tr>
               <th>Resource name</th>
