@@ -5,10 +5,6 @@ if (localStorage.access_token) {
   authToken(localStorage.access_token);
 }
 
-type RecommendedResourcesRequestBody = {
-  document_id: number;
-};
-
 export const getCourseDetails = async (
   documentId: number
 ): Promise<AxiosResponse> => {
@@ -121,6 +117,10 @@ export const getPdf = async (doc_id: string): Promise<AxiosResponse> => {
     // Handle any errors here
     throw error;
   }
+};
+
+type RecommendedResourcesRequestBody = {
+  document_ids: number[];
 };
 
 export const getRecommendedResources = async (

@@ -30,3 +30,20 @@ export const search = async (
     throw error;
   }
 };
+
+export const getSearchRecommendation = async (
+  data: SearchRequestBody
+): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.post("http://localhost:8080/search-recommend", 
+    data,
+    {
+      headers: {
+        "Authorization": `Bearer ${localStorage.access_token}`
+      }
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
