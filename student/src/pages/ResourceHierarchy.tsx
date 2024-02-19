@@ -112,7 +112,7 @@ const ResourceHierarchy = (props: Props) => {
         return;
       }
       const response = await getRecommendedResources({
-        document_id: selectedDocId,
+        document_ids: selectedDocId,
       });
 
       const resources = response.data.results; // Extract the relevant data from the response
