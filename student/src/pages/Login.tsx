@@ -3,7 +3,6 @@ import Logo from "../assets/images/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../login/authContext";
 
-
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

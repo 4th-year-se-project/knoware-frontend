@@ -3,9 +3,7 @@ import HeaderBar from "../components/HeaderBar";
 import Masonry from "react-responsive-masonry";
 import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
-import CourseForm from "../components/CourseForm";
-import CommentBox from "../components/CommentBox";
-import { Modal, Title, rem, Group, Box, Loader } from "@mantine/core";
+import { Modal, Title, rem, Group, Box, Loader, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
@@ -29,8 +27,10 @@ import {
   clearFileStatus,
   FileStatus,
 } from "../slices/fileStatusSlice";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [opened, { open, close }] = useDisclosure(false);
   const [modalContent, setModalContent] = useState("null");
@@ -56,6 +56,19 @@ const Home = () => {
   //   setUploadList(list);
   // };
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    const username = urlParams.get("name");
+
+    if (token && username) {
+      localStorage.setItem("access_token", token);
+      localStorage.setItem("name", username);
+
+      navigate("/");
+    }
+  }, [navigate]);
+  
   useEffect(() => {
     if (fileStatusList.length > 0) {
       setIsUploadBoxOpened(true);
@@ -88,7 +101,7 @@ const Home = () => {
   }, []);
 
   const handleResourceClick = (resourceType: string, resource: any) => {
-    console.log(resource)
+    console.log(resource);
     setActiveResource({
       name: resource.title,
       topic: resource.topic,
@@ -97,7 +110,7 @@ const Home = () => {
       content: resource.content,
       doc_id: resource.doc_id,
       embedding_id: resource.embedding_id,
-      keywords: resource.keywords
+      keywords: resource.keywords,
     });
     setModalContent(resourceType);
     open();
@@ -184,40 +197,53 @@ const Home = () => {
       <Title order={1} className="px-40">
         {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
       </Title>
-      <Masonry columnsCount={3} className="px-40">
-        {resources.length > 0 &&
-          resources.map((resource, index) => {
-            if (resource.type === "image") {
-              return (
-                <DefaultResource
-                  key={index}
-                  image={resource.url}
-                  title={resource.title}
-                  onClick={() => handleResourceClick("resource", resource)}
-                />
-              );
-            } else if (resource.type === "audio") {
-              return (
-                <AudioResource
-                  key={index}
-                  onClick={() => handleResourceClick("resource", resource)}
-                  textContent={resource.content}
-                />
-              );
-            } else if (resource.type === "pdf" || resource.type === "youtube") {
-              const imageUrl = `data:image/png;base64, ${resource.page_image}`;
-              return (
-                <DefaultResource
-                  key={index}
-                  image={imageUrl}
-                  title={resource.title}
-                  onClick={() => handleResourceClick("resource", resource)}
-                />
-              );
-            }
-            return null; // handle other resource types if needed
-          })}
-      </Masonry>
+      <div>
+        {resources.length > 0 ? (
+          <Masonry columnsCount={3} className="px-40">
+            {resources.length > 0 &&
+              resources.map((resource, index) => {
+                if (resource.type === "image") {
+                  return (
+                    <DefaultResource
+                      key={index}
+                      image={resource.url}
+                      title={resource.title}
+                      onClick={() => handleResourceClick("resource", resource)}
+                    />
+                  );
+                } else if (resource.type === "audio") {
+                  return (
+                    <AudioResource
+                      key={index}
+                      onClick={() => handleResourceClick("resource", resource)}
+                      textContent={resource.content}
+                    />
+                  );
+                } else if (
+                  resource.type === "pdf" ||
+                  resource.type === "youtube"
+                ) {
+                  const imageUrl = `data:image/png;base64, ${resource.page_image}`;
+                  return (
+                    <DefaultResource
+                      key={index}
+                      image={imageUrl}
+                      title={resource.title}
+                      onClick={() => handleResourceClick("resource", resource)}
+                    />
+                  );
+                }
+                return null; // handle other resource types if needed
+              })}
+          </Masonry>
+        ) : (
+          <div className="text-center m-auto w-2/6 mt-12">
+            <img src="no-results.jpg" alt="No results found" />
+            <p className="text-lg">No results found</p>
+          </div>
+        )}
+      </div>
+
       {fileStatusList.length > 0 && (
         <Box
           className={`fixed bottom-0 right-4 h-auto min-h-1/12 w-1/4 text-black bg-white border-gray-200 border-2 shadow-gray-200 rounded-t-lg shadow-md ${

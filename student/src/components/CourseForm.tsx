@@ -26,7 +26,15 @@ interface Course {
   topics: Topic[];
 }
 
-const CourseForm: React.FC = () => {
+interface CourseFormProps {
+  onSubmit: () => void;
+}
+
+const CourseForm: React.FC<CourseFormProps> = ({
+  onSubmit,
+}: CourseFormProps) => {
+  // const CourseForm: React.FC = () => {
+  // const CourseForm: React.FC = ({ onSubmit }: { onSubmit: () => void }) => {
   const [courses, setCourses] = useState<Course[]>([
     {
       courseName: "",
@@ -125,6 +133,7 @@ const CourseForm: React.FC = () => {
     event.preventDefault();
     addCourseDetails(courses);
     console.log(courses);
+    onSubmit();
   };
 
   return (

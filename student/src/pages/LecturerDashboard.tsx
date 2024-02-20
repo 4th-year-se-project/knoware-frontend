@@ -1,40 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import {
-//   Table,
-//   Tabs,
-//   Rating,
-//   Textarea,
-//   Button,
-//   Container,
-//   Paper,
-//   Modal
-// } from "@mantine/core";
-// import Logo from "../assets/images/logo.svg";
-// import {
-//   getDashboard,
-//   editRating,
-//   addComment,
-//   getCourses,
-// } from "../services/dashboardAPI";
-// import { IconExternalLink } from "@tabler/icons-react";
-// import { getPdf } from "../services/resourceAPI";
-
-// const LecturerDashboard = () => {
-//   const [resources, setResources] = useState([]);
-
-//   const [activeTab, setActiveTab] = useState<string | null>("0");
-//   const [rows, setRows] = useState();
-//   const [courses, getCourses] = useState([]);
-
-//   useEffect(() => {
-//     getLecturerDashboard();
-//     handleTabChange(activeTab);
-//   }, []);
-
-//   useEffect(() => {
-//     handleTabChange(activeTab);
-//   }, [resources]);
-
 import React, { useState, useEffect } from "react";
 import {
   Table,
@@ -84,15 +47,6 @@ const LecturerDashboard = () => {
       console.error("Error getting resource info:", error);
     }
   };
-
-  // const getCoursesList = async () => {
-  //   try {
-  //     const response = await getCourses();
-  //     setCourses(response.data);
-  //   } catch (error) {
-  //     console.error("Error getting courses:", error);
-  //   }
-  // };
 
   const getCoursesList = async () => {
     try {
@@ -205,6 +159,11 @@ const LecturerDashboard = () => {
     getLecturerDashboard();
   };
 
+  const handleFormSubmit = () => {
+    setShowAddCourseModal(false);
+    getCoursesList();
+  };
+
   return (
     <div style={{ padding: "20px", margin: "20px" }}>
       <div
@@ -266,7 +225,7 @@ const LecturerDashboard = () => {
         size="70%"
       >
         {showAddCourseModal ? (
-          <CourseForm />
+          <CourseForm onSubmit={handleFormSubmit} />
         ) : (
           <Container>
             {courses.map((course: any) => (

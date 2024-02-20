@@ -6,17 +6,20 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useAuth } from "../login/authContext";
 import { IconLogout } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   onLogoClick: () => void;
 };
 
 const HeaderBar = (props: Props) => {
+  const navigate = useNavigate();
   const query = useSelector((state: any) => state.query.value);
   const { logout } = useAuth();
   const handleLogout = async () => {
     try {
       logout();
+      // navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
