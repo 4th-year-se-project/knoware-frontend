@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
 import { IconPhoto } from "@tabler/icons-react";
 import UploadModal from "../components/UploadModal";
+import Filter from "../components/Filter";
 import {
   getAllResources,
   getRecommendedResources,
@@ -18,6 +19,8 @@ import RecommendedResource from "../components/RecommendedResource";
 
 const Home = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  // const [filtersOpened, { open: openFilters, close: closeFilters }] = useDisclosure(false);
+  const [filtersOpened, { toggle: toggleFilters }] = useDisclosure(false);
   const [modalContent, setModalContent] = useState("null");
   const [resources, setResources] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,16 +33,33 @@ const Home = () => {
     topic: "",
     course: "",
     content: "",
+    label: "",
+    id: "",
   });
+
+  const [fileFormat, setFileFormat] = useState<string | null>(null);
+  const [date, setDate] = useState<string | null>(null);
+  const [course, setCourse] = useState<string | null>(null);
+  const [label, setLabel] = useState<string | null>(null);
 
   const handleSearch = useCallback(async (query: string) => {
     console.log("Search query:", query);
     setSearchQuery(query);
-    const searchResults = await search({ query: query });
+    const searchResults = await search({
+      query: query,
+      file_format: fileFormat,
+      date: date,
+      course: course,
+      label: label,
+    });
     setResources(searchResults.data.results);
     const searchRecommendedResults = query
       ? await getSearchRecommendation({
           query: query,
+          file_format: fileFormat,
+          date: date,
+          course: course,
+          label: label
         })
       : "";
     searchRecommendedResults
@@ -76,6 +96,8 @@ const Home = () => {
       course: resource.course,
       image: resource.url || `data:image/png;base64, ${resource.page_image}`,
       content: resource.content,
+      label: resource.label,
+      id: resource.doc_id,
     });
     setModalContent(resourceType);
     open();
@@ -83,6 +105,31 @@ const Home = () => {
 
   const closeModal = () => {
     close();
+  };
+
+  const handleFilter = async (
+    fileFormat: any,
+    date: any,
+    course: any,
+    label: any
+  ) => {
+    setFileFormat(fileFormat);
+    setDate(date);
+    setCourse(course);
+    setLabel(label);
+
+    const searchResults = await search({
+      query: searchQuery,
+      file_format: fileFormat,
+      date: date,
+      course: course,
+      label: label
+    });
+    setResources(searchResults.data.results);
+  };
+
+  const handleFiltersToggle = () => {
+    toggleFilters();
   };
 
   const handleRecommendButtonClick = () => {
@@ -106,6 +153,8 @@ const Home = () => {
           course={activeResource.course}
           image={activeResource.image}
           content={activeResource.content}
+          label={activeResource.label}
+          id={activeResource.id}
           onClose={closeModal}
         />
       );
@@ -120,6 +169,17 @@ const Home = () => {
       <div className="flex items-center justify-between px-40">
         <div className="flex items-center">
           <SearchBar long={true} onSearch={handleSearch} />
+          <Button
+            onClick={handleFiltersToggle}
+            variant="link"
+            className="mt-auto ml-10"
+            style={{
+              backgroundColor: "#007BFF",
+              color: "#FFFFFF",
+            }}
+          >
+            {filtersOpened ? "Hide Filters" : "Filters"}
+          </Button>
         </div>
         <div className="flex items-center mt-6">
           <Group
@@ -139,6 +199,11 @@ const Home = () => {
           </Group>
         </div>
       </div>
+      {filtersOpened && (
+        <div className="px-40 mb-4">
+          <Filter handleCallback={handleFilter} getResourcesCallback={getResources}/>
+        </div>
+      )}
       <div className="flex justify-between mr-40 mt-10">
         <Title order={1} className="px-40">
           {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
