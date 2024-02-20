@@ -56,6 +56,10 @@ const Home = () => {
     const searchRecommendedResults = query
       ? await getSearchRecommendation({
           query: query,
+          file_format: fileFormat,
+          date: date,
+          course: course,
+          label: label
         })
       : "";
     searchRecommendedResults
