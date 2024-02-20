@@ -19,7 +19,7 @@ const HeaderBar = (props: Props) => {
   const handleLogout = async () => {
     try {
       logout();
-      // navigate("/login");
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
