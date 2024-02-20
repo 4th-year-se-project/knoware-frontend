@@ -68,8 +68,11 @@ const Home = () => {
       navigate("/");
       getResources();
     }
-    if (localStorage.getItem("access_token") && localStorage.getItem("name")){
-      navigate("/login")
+    if (
+      !localStorage.getItem("access_token") &&
+      !localStorage.getItem("name")
+    ) {
+      navigate("/login");
     }
   }, [navigate]);
 
