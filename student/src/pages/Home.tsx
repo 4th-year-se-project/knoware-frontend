@@ -66,9 +66,13 @@ const Home = () => {
       localStorage.setItem("name", username);
 
       navigate("/");
+      getResources();
+    }
+    if (localStorage.getItem("access_token") && localStorage.getItem("name")){
+      navigate("/login")
     }
   }, [navigate]);
-  
+
   useEffect(() => {
     if (fileStatusList.length > 0) {
       setIsUploadBoxOpened(true);
@@ -96,9 +100,9 @@ const Home = () => {
     setResources(res.data.results);
   };
 
-  useEffect(() => {
-    getResources();
-  }, []);
+  // useEffect(() => {
+  //   getResources();
+  // }, []);
 
   const handleResourceClick = (resourceType: string, resource: any) => {
     console.log(resource);
