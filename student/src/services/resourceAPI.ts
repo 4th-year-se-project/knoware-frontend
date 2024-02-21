@@ -5,10 +5,6 @@ if (localStorage.access_token) {
   authToken(localStorage.access_token);
 }
 
-type RecommendedResourcesRequestBody = {
-  document_id: number;
-};
-
 export const getCourseDetails = async (
   documentId: number
 ): Promise<AxiosResponse> => {
@@ -123,6 +119,10 @@ export const getPdf = async (doc_id: string): Promise<AxiosResponse> => {
   }
 };
 
+type RecommendedResourcesRequestBody = {
+  document_ids: number[];
+};
+
 export const getRecommendedResources = async (
   data: RecommendedResourcesRequestBody
 ): Promise<AxiosResponse> => {
@@ -167,6 +167,31 @@ export const addEmbeddingComment = async (
       },
     });
     return response
+  } catch (error) {
+    throw error
+  }
+}
+
+export const getAllCoursess = async () : Promise<AxiosResponse> => {
+  try{
+    const response = await axios.get(
+      `http://localhost:8080/get-all-courses`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    throw error
+  }
+}
+
+export const editResourceLabel = async (document_id: number , label: string | null) : Promise<AxiosResponse> => {
+  try {
+    const response = await axios.put(`http://localhost:8080/update-label?document_id=${document_id}&label=${label}`);
+    return response;
   } catch (error) {
     throw error;
   }
