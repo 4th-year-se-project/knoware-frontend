@@ -16,7 +16,12 @@ import React, { useEffect, useState } from "react";
 import CommentBox from "./CommentBox";
 import CommentsAccordion from "./CommentsAccordian";
 import { IconEdit, IconSearch } from "@tabler/icons-react";
-import { getAllComments, addEmbeddingComment, editResourceLabel } from "../services/resourceAPI";
+import {
+  getAllComments,
+  addEmbeddingComment,
+  editResourceLabel,
+} from "../services/resourceAPI";
+import { getPdf } from "../services/resourceAPI";
 
 type Props = {
   onClose: () => void; // Callback function to close the modal
@@ -28,8 +33,10 @@ type Props = {
   doc_id: number;
   embedding_id: number;
   keywords: [];
-  label: string,
-  id: number,
+  label: string;
+  id: number;
+  type: string;
+  link: string;
 };
 
 type Comment = {
@@ -105,23 +112,47 @@ function ResourceModal(props: Props) {
     console.log(res);
   };
 
+  const openPdfInNewWindow = async () => {
+    try {
+      // Fetch the PDF using the getPdf function
+      const response = await getPdf(props.doc_id);
+
+      // Create a blob URL for the PDF content
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      // Open the PDF in a new window
+      window.open(pdfUrl, "_blank");
+    } catch (error) {
+      console.error("Error fetching or opening PDF:", error);
+    }
+  };
+
+  const viewResource = async () => {
+    if (props.type === "pdf") {
+      openPdfInNewWindow();
+    } else if (props.type === "youtube") {
+      window.open(props.link, "_blank");
+    }
+  };
+
   return (
     <div className="w w-full pr-2">
       <>
-      <div className="flex justify-between">
+        <div className="flex justify-between place-items-end">
           <Title order={2}>{props.name}</Title>
-          <div className="flex justify-between mt-auto mb-auto">
+          <div className="flex justify-between">
             {isEditMode ? (
               <>
                 <Flex direction="column">
                   <Select
                     data={
-                      label ?
-                      label === "High priority"
-                        ? ["Medium priority", "Low priority"]
-                        : label === "Medium priority"
-                        ? ["High priority", "Low priority"]
-                        : ["High priority", "Medium priority"]
+                      label
+                        ? label === "High priority"
+                          ? ["Medium priority", "Low priority"]
+                          : label === "Medium priority"
+                          ? ["High priority", "Low priority"]
+                          : ["High priority", "Medium priority"]
                         : ["High priority", "Medium priority", "Low priority"]
                     }
                     value={editableLabel}
@@ -189,11 +220,11 @@ function ResourceModal(props: Props) {
               </>
             )}
           </div>
-        </div>        <Breadcrumbs separator="→" mt="xs" mb="lg">
+        </div>{" "}
+        <Breadcrumbs separator="→" mt="xs" mb="lg">
           <Text color="indigo.7">{props.course}</Text>
           <Text color="indigo.7">{props.topic}</Text>
         </Breadcrumbs>
-
         <Flex gap="md">
           <img
             src={props.image}
@@ -201,21 +232,28 @@ function ResourceModal(props: Props) {
             className=" max-w-md border border-gray-300 h-auto"
           />
           <Stack>
-            <p className="font-bold">Keywords</p>
-            <Group mb="xs">
-              {props.keywords.map((tag, index) => (
-                <Badge key={index} color="indigo" variant="light">
-                  {tag}
-                </Badge>
-              ))}
-            </Group>
+            {props.keywords.length > 0 && (
+              <>
+                <p className="font-bold">Keywords</p>
+                <Group mb="xs">
+                  {props.keywords.map((tag, index) => (
+                    <Badge key={index} color="indigo" variant="light">
+                      {tag}
+                    </Badge>
+                  ))}
+                </Group>
+              </>
+            )}
+
             <p className="font-bold">Matched Content</p>
             <Mark color="indigo" className="text-sm p-2">
               {props.content.length > 300
                 ? props.content.substring(0, 300) + "..."
                 : props.content}
             </Mark>
-            <Button className="bg-black">View Resource</Button>
+            <Button className="bg-black" onClick={viewResource}>
+              View Resource
+            </Button>
           </Stack>
         </Flex>
         <div className="flex place-items-end mt-10 mb-10">
@@ -236,7 +274,6 @@ function ResourceModal(props: Props) {
             Add
           </Button>
         </div>
-
         <CommentsAccordion
           embeddingComment={allComments.embeddingComment}
           otherEmbeddingComments={allComments.otherEmbeddingComments}

@@ -100,7 +100,7 @@ export const editTopic = async (
   }
 };
 
-export const getPdf = async (doc_id: string): Promise<AxiosResponse> => {
+export const getPdf = async (doc_id: number): Promise<AxiosResponse> => {
   console.log(doc_id);
   try {
     const response = await axios.get(

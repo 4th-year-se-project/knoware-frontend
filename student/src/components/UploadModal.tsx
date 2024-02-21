@@ -59,25 +59,49 @@ function UploadModal(props: Props) {
   };
 
   const uploadYoutube = async () => {
-    let fileInfo: { name: string; size: number } | undefined;
+    let fileInfo: { name: string; size: number | null } | undefined;
+    const abortController = new AbortController();
 
-    setIsUploading(true);
+    if (url) {
+      setIsUploading(true);
+      fileInfo = { name: url, size: null };
 
-    try {
-      const data = {
-        video_url: url,
-      };
-      const embed = await embedYoutube(data);
+      dispatch(
+        addFileStatus({
+          fileInfo: fileInfo,
+          status: "uploading",
+          abortController,
+        })
+      );
 
-      dispatch(addFileStatus({ fileInfo: fileInfo, status: "success" }));
-    } catch (error) {
-      console.error("Error embedding YouTube video:", error);
+      try {
+        const data = {
+          video_url: url,
+        };
+        const embed = await embedYoutube(data, abortController.signal);
+        dispatch(addFileStatus({ fileInfo, status: "success" }));
+        setIsUploading(false);
 
-      dispatch(addFileStatus({ fileInfo: fileInfo, status: "error" }));
-    } finally {
+        console.log("File uploaded successfully!");
+      } catch (error: any) {
+        if (error.name === "CanceledError") {
+          console.error("Upload cancelled:", error);
+
+          dispatch(addFileStatus({ fileInfo: fileInfo, status: "cancelled" }));
+        } else {
+          console.error("Error embedding file:", error);
+
+          dispatch(addFileStatus({ fileInfo: fileInfo, status: "error" }));
+        }
+
+        setIsUploading(false);
+      }
+    } else {
+      console.error("No youtube url added for embedding.");
       setIsUploading(false);
     }
   };
+
   return (
     <div>
       <p className="font-bold mb-3">Upload a Resource</p>
@@ -113,7 +137,7 @@ function UploadModal(props: Props) {
           />
           <button
             onClick={() => {
-              //   setIsUploading(true);
+              setIsUploading(true);
               uploadYoutube();
               props.onClose();
             }}

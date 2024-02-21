@@ -136,6 +136,7 @@ const Home = () => {
 
   const getResources = async () => {
     const res = await getAllResources();
+    console.log(res.data.results)
     setResources(res.data.results);
   };
 
@@ -157,7 +158,7 @@ const Home = () => {
   }, []);
 
   const handleResourceClick = (resourceType: string, resource: any) => {
-    console.log(resource);
+    //console.log(resource);
     setActiveResource({
       name: resource.title,
       topic: resource.topic,
@@ -169,6 +170,8 @@ const Home = () => {
       keywords: resource.keywords,
       label: resource.label,
       id: resource.doc_id,
+      type: resource.type,
+      link: resource.link
     });
     setModalContent(resourceType);
     open();
@@ -229,6 +232,8 @@ const Home = () => {
           keywords={activeResource.keywords}
           label={activeResource.label}
           id={activeResource.id}
+          type={activeResource.type}
+          link={activeResource.link}
           onClose={closeModal}
         />
       );
@@ -446,7 +451,7 @@ const Home = () => {
 
         {fileStatusList.length > 0 && (
           <Box
-            className={`fixed bottom-0 right-4 h-auto min-h-1/12 w-1/4 text-black bg-white border-gray-200 border-2 shadow-gray-200 rounded-t-lg shadow-md ${
+            className={`fixed bottom-0 right-4 h-auto min-h-1/12 w-1/4 max-w-1/4 text-black bg-white border-gray-200 border-2 shadow-gray-200 rounded-t-lg shadow-md z-10 ${
               isUploadBoxOpened ? "pb-3" : ""
             }`}
           >
@@ -485,14 +490,8 @@ const Home = () => {
                 >
                   <div className="flex items-center">
                     <IconFileText></IconFileText>
-                    <p className="text-ellipsis overflow-hidden w-4/5 text-sm ml-3">
-                      <span
-                        style={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
+                    <p className="whitespace-normal text-ellipsis overflow-hidden w-4/5 text-sm ml-3">
+                      <span>
                         {fileStatus.fileInfo
                           ? fileStatus.fileInfo.name
                           : "Unknown file"}

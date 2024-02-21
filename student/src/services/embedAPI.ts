@@ -23,7 +23,7 @@ const endpointMapping: Record<string, string> = {
 };
 
 export const embedYoutube = async (
-  data: YouTubeRequestBody
+  data: YouTubeRequestBody, abortSignal: AbortSignal
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.post(
