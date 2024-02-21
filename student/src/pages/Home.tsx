@@ -318,7 +318,7 @@ const Home = () => {
             className="mt-auto"
             style={{
               zIndex: 1,
-              backgroundColor: "#A855F7",
+              backgroundColor: "#007BFF",
               color: "#FFFFFF",
             }}
           >
