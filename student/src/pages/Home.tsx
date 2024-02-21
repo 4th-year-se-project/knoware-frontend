@@ -7,6 +7,7 @@ import { Modal, Title, rem, Group, Box, Loader, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useCallback, useEffect, useState } from "react";
 import ResourceModal from "../components/ResourceModal";
+import CommentsAccordion from "../components/CommentsAccordian";
 import {
   IconPhoto,
   IconFileText,
@@ -103,9 +104,9 @@ const Home = () => {
     setResources(res.data.results);
   };
 
-  // useEffect(() => {
-  //   getResources();
-  // }, []);
+  useEffect(() => {
+    getResources();
+  }, []);
 
   const handleResourceClick = (resourceType: string, resource: any) => {
     console.log(resource);

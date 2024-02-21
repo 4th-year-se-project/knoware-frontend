@@ -31,7 +31,7 @@ export const getCourseDetails = async (
 export const getAllResources = async (): Promise<AxiosResponse> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/get-all-resources`,
+      `http://localhost:8080/get_all_resources`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.access_token}`,
@@ -140,10 +140,11 @@ export const getRecommendedResources = async (
 };
 
 export const getAllComments = async (
-  doc_id: number
+  doc_id: number,
+  embedding_id: number
 ): Promise<AxiosResponse> => {
   try {
-    const response = await axios.get(`http://localhost:8080/get_all_comments?document_id=${doc_id}`, {
+    const response = await axios.get(`http://localhost:8080/get_all_comments?document_id=${doc_id}&embedding_id=${embedding_id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.access_token}`,
       },

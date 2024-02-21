@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import CommentBox from "./CommentBox";
+import CommentsAccordion from "./CommentsAccordian";
 import { IconSearch } from "@tabler/icons-react";
 import { getAllComments, addEmbeddingComment } from "../services/resourceAPI";
 
@@ -33,16 +34,27 @@ type Comment = {
   is_lecturer_comment: boolean;
   timestamp: any;
   page_number: number;
+  comment_date_added: any;
+};
+
+type AllComments = {
+  embeddingComment: Comment[];
+  otherEmbeddingComments: Comment[];
+  lecturerComment: Comment[];
 };
 
 function ResourceModal(props: Props) {
-  const [allComments, setAllComments] = useState<Comment[]>([]);
+  const [allComments, setAllComments] = useState<AllComments>({
+    embeddingComment: [],
+    otherEmbeddingComments: [],
+    lecturerComment: [],
+  });
   const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await getAllComments(props.doc_id);
+        const response = await getAllComments(props.doc_id, props.embedding_id);
         console.log(response);
         setAllComments(response.data.comments);
         //setAllComments(response.comments);
@@ -60,7 +72,7 @@ function ResourceModal(props: Props) {
       await addEmbeddingComment(props.doc_id, props.embedding_id, newComment);
 
       // Fetch updated comments after adding a new comment
-      const response = await getAllComments(props.doc_id);
+      const response = await getAllComments(props.doc_id, props.embedding_id);
       setAllComments(response.data.comments);
 
       // Clear the input field
@@ -122,15 +134,11 @@ function ResourceModal(props: Props) {
           </Button>
         </div>
 
-        {allComments?.map((comment: any, index: number) => (
-          <CommentBox
-            key={index}
-            comment={comment.comment}
-            is_lecturer_comment={comment.is_lecturer_comment}
-            timestamp={comment.timestamp}
-            page_number={comment.page_number}
-          />
-        ))}
+        <CommentsAccordion
+          embeddingComment={allComments.embeddingComment}
+          otherEmbeddingComments={allComments.otherEmbeddingComments}
+          lecturerComment={allComments.lecturerComment}
+        />
       </>
     </div>
   );
