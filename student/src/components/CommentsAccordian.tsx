@@ -55,7 +55,7 @@ function CommentSection({ comments, title }: CommentSectionProps) {
                 </Badge>
               )}
             </div>
-            <Text size="xs" color="dimmed">
+            <Text size="xs" color="dimmed" className="mb-3">
               {formatCommentAddedDate(comment)}
             </Text>
           </div>
