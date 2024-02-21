@@ -22,6 +22,10 @@ const SearchResults = (props: Props) => {
     console.log(query);
     try {
       const data = {
+        file_format: "",
+        date: "",
+        course: "",
+        label: "",
         query: query,
       };
       const response = await search(data);
