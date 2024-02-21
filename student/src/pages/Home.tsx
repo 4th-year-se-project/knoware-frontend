@@ -3,7 +3,7 @@ import HeaderBar from "../components/HeaderBar";
 import Masonry from "react-responsive-masonry";
 import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
-import {  Box, Loader, Stack } from "@mantine/core";
+import { Box, Loader, Stack } from "@mantine/core";
 import {
   IconFileText,
   IconCircleCheckFilled,
@@ -126,7 +126,7 @@ const Home = () => {
           file_format: fileFormat,
           date: date,
           course: course,
-          label: label
+          label: label,
         })
       : "";
     searchRecommendedResults
@@ -194,7 +194,7 @@ const Home = () => {
       file_format: fileFormat,
       date: date,
       course: course,
-      label: label
+      label: label,
     });
     setResources(searchResults.data.results);
   };
@@ -300,7 +300,10 @@ const Home = () => {
       </div>
       {filtersOpened && (
         <div className="px-40 mb-4">
-          <Filter handleCallback={handleFilter} getResourcesCallback={getResources}/>
+          <Filter
+            handleCallback={handleFilter}
+            getResourcesCallback={getResources}
+          />
         </div>
       )}
       <div className="flex justify-between mr-40 mt-10">
@@ -402,7 +405,7 @@ const Home = () => {
               return null;
             })
           : ""}
-        {resources.length > 0 &&
+        {resources.length > 0 ? (
           resources.map((resource, index) => {
             if (resource.type === "image") {
               return (
@@ -433,7 +436,114 @@ const Home = () => {
               );
             }
             return null; // handle other resource types if needed
-          })}
+          })
+        ) : (
+          <div className="text-center m-auto w-2/6 mt-12">
+            <img src="no-results.jpg" alt="No results found" />
+            <p className="text-lg">No results found</p>
+          </div>
+        )}
+
+        {fileStatusList.length > 0 && (
+          <Box
+            className={`fixed bottom-0 right-4 h-auto min-h-1/12 w-1/4 text-black bg-white border-gray-200 border-2 shadow-gray-200 rounded-t-lg shadow-md ${
+              isUploadBoxOpened ? "pb-3" : ""
+            }`}
+          >
+            <div
+              id="upload-box-header"
+              className="bg-slate-200 w-full h-3/12 p-2 flex justify-between items-center"
+            >
+              <p className="ml-3">Uploading resources</p>
+              <Group className="flex justify-left align-left p-2">
+                <button
+                  onClick={handleToggleCollapse}
+                  className="text-gray-500 hover:text-blue-700"
+                >
+                  {isUploadBoxOpened ? <IconChevronDown /> : <IconChevronUp />}
+                </button>
+
+                <button
+                  onClick={handleCloseBox}
+                  disabled={!isCloseButtonEnabled} // Set this based on file status list
+                >
+                  <IconX width={17} height={17} />
+                </button>
+              </Group>
+            </div>
+            <div
+              className={`h-9/12 overflow-y-scroll ${
+                isUploadBoxOpened ? "" : "hidden"
+              }`}
+            >
+              {fileStatusList.map((fileStatus, index) => (
+                <div
+                  key={index}
+                  className="px-4 pt-4 flex items-center justify-between"
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <div className="flex items-center">
+                    <IconFileText></IconFileText>
+                    <p className="text-ellipsis overflow-hidden w-4/5 text-sm ml-3">
+                      <span
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {fileStatus.fileInfo
+                          ? fileStatus.fileInfo.name
+                          : "Unknown file"}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div>
+                    {/* {fileStatus.status === "uploading" ? (
+                    <>
+                      {hoveredIndex === index ? (
+                        // Display the cancel button and attach the cancelUpload function
+                        <IconCircleXFilled
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => handleCancelUpload(index)}
+                        />
+                      ) : (
+                        // Display the loading icon
+                        <Loader
+                          color="blue"
+                          size="sm"
+                          className="cursor-pointer"
+                        />
+                      )}
+                    </>
+                  ) : fileStatus.status === "success" ? (
+                    <IconCircleCheckFilled className="text-green-500 cursor-pointer" />
+                  ) : fileStatus.status === "cancelled" ? (
+                    <IconMoodWrrr className="text-yellow-500 cursor-pointer" />
+                  ) : (
+                    <IconExclamationCircle className="text-red-500 cursor-pointer" />
+                  )} */}
+                    {fileStatus.status === "uploading" ? (
+                      <Loader
+                        color="blue"
+                        size="sm"
+                        className="cursor-pointer"
+                      />
+                    ) : fileStatus.status === "success" ? (
+                      <IconCircleCheckFilled className="text-green-500 cursor-pointer" />
+                    ) : fileStatus.status === "cancelled" ? (
+                      <IconMoodWrrr className="text-yellow-500 cursor-pointer" />
+                    ) : (
+                      <IconExclamationCircle className="text-red-500 cursor-pointer" />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Box>
+        )}
       </Masonry>
       <Modal opened={opened} onClose={close} centered size="55%">
         {renderModalContent()}
