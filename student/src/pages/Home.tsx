@@ -43,9 +43,9 @@ const Home = () => {
   const [filtersOpened, { toggle: toggleFilters }] = useDisclosure(false);
   const [modalContent, setModalContent] = useState("null");
   const [resources, setResources] = useState<any[]>([]);
+  const [allResources, setAllResources] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchRecommendation, setSearchRecommendation] = useState<any[]>([]);
-  const [defaultRecommendation, setDefaultRecommendation] = useState<any[]>([]);
+  const [recommendedResources, setRecommendedResources] = useState<any[]>([]);
   const [showRecommendation, setShowRecommendation] = useState(false);
   const [activeResource, setActiveResource] = useState<any>({
     name: "",
@@ -120,6 +120,8 @@ const Home = () => {
       label: label,
     });
     setResources(searchResults.data.results);
+    setAllResources(searchResults.data.results);
+
     const searchRecommendedResults = query
       ? await getSearchRecommendation({
           query: query,
@@ -129,15 +131,13 @@ const Home = () => {
           label: label,
         })
       : "";
-    searchRecommendedResults
-      ? setSearchRecommendation(searchRecommendedResults.data.results)
-      : setSearchRecommendation([]);
   }, []);
 
   const getResources = async () => {
     const res = await getAllResources();
     console.log(res.data.results)
     setResources(res.data.results);
+    setAllResources(res.data.results);
   };
 
   useEffect(() => {
@@ -145,7 +145,7 @@ const Home = () => {
       try {
         const ids = resources.map((item: { doc_id: any }) => item.doc_id);
         const res = await getRecommendedResources({ document_ids: ids });
-        setDefaultRecommendation(res.data.results);
+        setRecommendedResources(res.data.results);
       } catch (error) {
         console.error("Error fetching default recommendation:", error);
       }
@@ -207,11 +207,13 @@ const Home = () => {
   };
 
   const handleRecommendButtonClick = () => {
-    setShowRecommendation(true);
-  };
-
-  const handleRegularButtonClick = () => {
-    setShowRecommendation(false);
+    if (showRecommendation) {
+      setShowRecommendation(false);
+      setAllResources(resources);
+    } else {
+      setShowRecommendation(true);
+      setAllResources(recommendedResources.concat(resources));
+    }
   };
 
   const renderModalContent = () => {
@@ -317,11 +319,7 @@ const Home = () => {
         </Title>
         <Tooltip label="Click here to discover resources recommended from your peers">
           <Button
-            onClick={
-              showRecommendation
-                ? handleRegularButtonClick
-                : handleRecommendButtonClick
-            }
+            onClick={handleRecommendButtonClick}
             variant="filled"
             className="mt-auto"
             style={{
@@ -336,82 +334,9 @@ const Home = () => {
           </Button>
         </Tooltip>
       </div>
-      <Masonry columnsCount={3} className="px-40">
-        {showRecommendation && searchQuery === ""
-          ? defaultRecommendation?.map((recommendedResource, index) => {
-              if (recommendedResource.type === "audio") {
-                return (
-                  <AudioResource
-                    key={index}
-                    onClick={() =>
-                      handleResourceClick("resource", recommendedResource)
-                    }
-                    textContent={recommendedResource.content}
-                  />
-                );
-              } else if (
-                recommendedResource.type === "pdf" ||
-                recommendedResource.type === "youtube"
-              ) {
-                const imageUrl = `data:image/png;base64, ${recommendedResource.page_image}`;
-                return (
-                  <RecommendedResource
-                    key={index}
-                    image={imageUrl}
-                    title={recommendedResource.title}
-                    onClick={() =>
-                      handleResourceClick("resource", recommendedResource)
-                    }
-                  />
-                );
-              }
-              return null;
-            })
-          : ""}
-        {showRecommendation && searchRecommendation !== null
-          ? searchRecommendation.map((recommendedResource, index) => {
-              if (recommendedResource.type === "image") {
-                return (
-                  <RecommendedResource
-                    key={index}
-                    image={recommendedResource.url}
-                    title={recommendedResource.title}
-                    onClick={() =>
-                      handleResourceClick("resource", recommendedResource)
-                    }
-                  />
-                );
-              } else if (recommendedResource.type === "audio") {
-                return (
-                  <AudioResource
-                    key={index}
-                    onClick={() =>
-                      handleResourceClick("resource", recommendedResource)
-                    }
-                    textContent={recommendedResource.content}
-                  />
-                );
-              } else if (
-                recommendedResource.type === "pdf" ||
-                recommendedResource.type === "youtube"
-              ) {
-                const imageUrl = `data:image/png;base64, ${recommendedResource.page_image}`;
-                return (
-                  <RecommendedResource
-                    key={index}
-                    image={imageUrl}
-                    title={recommendedResource.title}
-                    onClick={() =>
-                      handleResourceClick("resource", recommendedResource)
-                    }
-                  />
-                );
-              }
-              return null;
-            })
-          : ""}
-        {resources.length > 0 ? (
-          resources.map((resource, index) => {
+      {allResources.length > 0 ? (
+        <Masonry className="px-40" columnsCount={3}>
+          {allResources.map((resource, index) => {
             if (resource.type === "image") {
               return (
                 <DefaultResource
@@ -419,6 +344,7 @@ const Home = () => {
                   image={resource.url}
                   title={resource.title}
                   onClick={() => handleResourceClick("resource", resource)}
+                  isRecommended={resource.isRecommended}
                 />
               );
             } else if (resource.type === "audio") {
@@ -437,70 +363,78 @@ const Home = () => {
                   image={imageUrl}
                   title={resource.title}
                   onClick={() => handleResourceClick("resource", resource)}
+                  isRecommended={resource.isRecommended}
                 />
               );
             }
             return null; // handle other resource types if needed
-          })
-        ) : (
-          <div className="text-center m-auto w-2/6 mt-12">
-            <img src="no-results.jpg" alt="No results found" />
-            <p className="text-lg">No results found</p>
-          </div>
-        )}
+          })}
+        </Masonry>
+      ) : (
+        <div className="text-center mx-auto w-2/5 mt-8">
+          <img src="no-results.jpg" alt="No results found" />
+          <p className="text-lg">No results found</p>
+        </div>
+      )}
 
-        {fileStatusList.length > 0 && (
-          <Box
-            className={`fixed bottom-0 right-4 h-auto min-h-1/12 w-1/4 max-w-1/4 text-black bg-white border-gray-200 border-2 shadow-gray-200 rounded-t-lg shadow-md z-10 ${
-              isUploadBoxOpened ? "pb-3" : ""
+      {fileStatusList.length > 0 && (
+        <Box
+          className={`fixed bottom-0 right-4 h-auto min-h-1/12 w-1/4 text-black bg-white border-gray-200 border-2 shadow-gray-200 rounded-t-lg shadow-md ${
+            isUploadBoxOpened ? "pb-3" : ""
+          }`}
+        >
+          <div
+            id="upload-box-header"
+            className="bg-slate-200 w-full h-3/12 p-2 flex justify-between items-center"
+          >
+            <p className="ml-3">Uploading resources</p>
+            <Group className="flex justify-left align-left p-2">
+              <button
+                onClick={handleToggleCollapse}
+                className="text-gray-500 hover:text-blue-700"
+              >
+                {isUploadBoxOpened ? <IconChevronDown /> : <IconChevronUp />}
+              </button>
+
+              <button
+                onClick={handleCloseBox}
+                disabled={!isCloseButtonEnabled} // Set this based on file status list
+              >
+                <IconX width={17} height={17} />
+              </button>
+            </Group>
+          </div>
+          <div
+            className={`h-9/12 overflow-y-scroll ${
+              isUploadBoxOpened ? "" : "hidden"
             }`}
           >
-            <div
-              id="upload-box-header"
-              className="bg-slate-200 w-full h-3/12 p-2 flex justify-between items-center"
-            >
-              <p className="ml-3">Uploading resources</p>
-              <Group className="flex justify-left align-left p-2">
-                <button
-                  onClick={handleToggleCollapse}
-                  className="text-gray-500 hover:text-blue-700"
-                >
-                  {isUploadBoxOpened ? <IconChevronDown /> : <IconChevronUp />}
-                </button>
+            {fileStatusList.map((fileStatus, index) => (
+              <div
+                key={index}
+                className="px-4 pt-4 flex items-center justify-between"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <div className="flex items-center">
+                  <IconFileText></IconFileText>
+                  <p className="text-ellipsis overflow-hidden w-4/5 text-sm ml-3">
+                    <span
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {fileStatus.fileInfo
+                        ? fileStatus.fileInfo.name
+                        : "Unknown file"}
+                    </span>
+                  </p>
+                </div>
 
-                <button
-                  onClick={handleCloseBox}
-                  disabled={!isCloseButtonEnabled} // Set this based on file status list
-                >
-                  <IconX width={17} height={17} />
-                </button>
-              </Group>
-            </div>
-            <div
-              className={`h-9/12 overflow-y-scroll ${
-                isUploadBoxOpened ? "" : "hidden"
-              }`}
-            >
-              {fileStatusList.map((fileStatus, index) => (
-                <div
-                  key={index}
-                  className="px-4 pt-4 flex items-center justify-between"
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                >
-                  <div className="flex items-center">
-                    <IconFileText></IconFileText>
-                    <p className="whitespace-normal text-ellipsis overflow-hidden w-4/5 text-sm ml-3">
-                      <span>
-                        {fileStatus.fileInfo
-                          ? fileStatus.fileInfo.name
-                          : "Unknown file"}
-                      </span>
-                    </p>
-                  </div>
-
-                  <div>
-                    {/* {fileStatus.status === "uploading" ? (
+                <div>
+                  {/* {fileStatus.status === "uploading" ? (
                     <>
                       {hoveredIndex === index ? (
                         // Display the cancel button and attach the cancelUpload function
@@ -524,26 +458,22 @@ const Home = () => {
                   ) : (
                     <IconExclamationCircle className="text-red-500 cursor-pointer" />
                   )} */}
-                    {fileStatus.status === "uploading" ? (
-                      <Loader
-                        color="blue"
-                        size="sm"
-                        className="cursor-pointer"
-                      />
-                    ) : fileStatus.status === "success" ? (
-                      <IconCircleCheckFilled className="text-green-500 cursor-pointer" />
-                    ) : fileStatus.status === "cancelled" ? (
-                      <IconMoodWrrr className="text-yellow-500 cursor-pointer" />
-                    ) : (
-                      <IconExclamationCircle className="text-red-500 cursor-pointer" />
-                    )}
-                  </div>
+                  {fileStatus.status === "uploading" ? (
+                    <Loader color="blue" size="sm" className="cursor-pointer" />
+                  ) : fileStatus.status === "success" ? (
+                    <IconCircleCheckFilled className="text-green-500 cursor-pointer" />
+                  ) : fileStatus.status === "cancelled" ? (
+                    <IconMoodWrrr className="text-yellow-500 cursor-pointer" />
+                  ) : (
+                    <IconExclamationCircle className="text-red-500 cursor-pointer" />
+                  )}
                 </div>
-              ))}
-            </div>
-          </Box>
-        )}
-      </Masonry>
+              </div>
+            ))}
+          </div>
+        </Box>
+      )}
+
       <Modal opened={opened} onClose={close} centered size="55%">
         {renderModalContent()}
       </Modal>

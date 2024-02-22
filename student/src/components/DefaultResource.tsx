@@ -1,4 +1,4 @@
-import { Title } from "@mantine/core";
+import { Badge, Title } from "@mantine/core";
 import React from "react";
 
 type Props = {
@@ -6,16 +6,32 @@ type Props = {
   key: number;
   image: string;
   onClick: () => void;
+  isRecommended: boolean;
+};
+
+const badgeStyle = {
+  borderRadius: 0,
+  backgroundColor: "#A855F7",
+  color: "#FFFFFF",
 };
 
 function DefaultResource(props: Props) {
+
   return (
     <div
       onClick={props.onClick}
-      className="m-6    rounded-md transition-transform transform hover:scale-105 duration-300 ease-in-out"
+      className=" m-6 rounded-md transition-transform transform hover:scale-105 duration-300 ease-in-out"
     >
+      {props.isRecommended && (<Badge
+        color="purple"
+        className="absolute right-0 z-10 bottom-0 mr-0 roun"
+        style={badgeStyle}
+      >
+        Recommended
+      </Badge>)}
       <Title order={4}>{props.title}</Title>
       <img
+      className={`${props.isRecommended ? "border-4 border-purple-500": "" }`}
         key={props.key}
         src={props.image}
         width={400}
