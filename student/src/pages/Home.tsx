@@ -121,6 +121,7 @@ const Home = () => {
     });
     setResources(searchResults.data.results);
     setAllResources(searchResults.data.results);
+    console.log(searchResults.data.results);
 
     const searchRecommendedResults = query
       ? await getSearchRecommendation({
@@ -131,11 +132,15 @@ const Home = () => {
           label: label,
         })
       : "";
+
+    searchRecommendedResults
+      ? setRecommendedResources(searchRecommendedResults.data.results)
+      : setRecommendedResources([]);
   }, []);
 
   const getResources = async () => {
     const res = await getAllResources();
-    console.log(res.data.results)
+    console.log(res.data.results);
     setResources(res.data.results);
     setAllResources(res.data.results);
   };
@@ -199,7 +204,7 @@ const Home = () => {
       course: course,
       label: label,
     });
-    setResources(searchResults.data.results);
+    setAllResources(searchResults.data.results);
   };
 
   const handleFiltersToggle = () => {
