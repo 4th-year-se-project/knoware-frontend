@@ -418,14 +418,8 @@ const Home = () => {
               >
                 <div className="flex items-center">
                   <IconFileText></IconFileText>
-                  <p className="text-ellipsis overflow-hidden w-4/5 text-sm ml-3">
-                    <span
-                      style={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
+                  <p className="text-ellipsis overflow-hidden w-4/5 text-sm ml-3 whitespace-normal">
+                    <span>
                       {fileStatus.fileInfo
                         ? fileStatus.fileInfo.name
                         : "Unknown file"}
