@@ -67,9 +67,6 @@ const Home = () => {
     const token = urlParams.get("token");
     const username = urlParams.get("name");
 
-    const stored_token = localStorage.getItem("aceess_token");
-    const stored_username = localStorage.getItem("token");
-
     if (token && username) {
       localStorage.setItem("access_token", token);
       localStorage.setItem("name", username);
@@ -118,7 +115,6 @@ const Home = () => {
     });
     setResources(searchResults.data.results);
     setAllResources(searchResults.data.results);
-    console.log(searchResults.data.results);
 
     const searchRecommendedResults = query
       ? await getSearchRecommendation({
@@ -137,7 +133,6 @@ const Home = () => {
 
   const getResources = async () => {
     const res = await getAllResources();
-    console.log(res.data.results);
     setResources(res.data.results);
     setAllResources(res.data.results);
   };
@@ -156,7 +151,6 @@ const Home = () => {
   }, [resources]);
 
   const handleResourceClick = (resourceType: string, resource: any) => {
-    //console.log(resource);
     setActiveResource({
       name: resource.title,
       topic: resource.topic,

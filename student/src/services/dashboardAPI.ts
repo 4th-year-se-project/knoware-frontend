@@ -1,41 +1,55 @@
 import axios, { AxiosResponse } from "axios";
 
 export const getDashboard = async (): Promise<AxiosResponse> => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/dashboard`
-      );
-      return response;
-    } catch (error) {
-      throw error;
-    }
-}
+  try {
+    const response = await axios.get(`http://localhost:8080/dashboard`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.access_token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const editRating = async (
-    documentId: number,
-    rating: number
-  ): Promise<AxiosResponse> => {
-    try {
-      const response = await axios.put(
-        `http://localhost:8080/rating?document_id=${documentId}&rating=${rating}`);
-      return response;
-    } catch (error) {
-      throw error;
-    }
-}
+  documentId: number,
+  rating: number
+): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.put(
+      `http://localhost:8080/rating?document_id=${documentId}&rating=${rating}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const addComment = async (
-    documentId: number,
-    comment: string
-  ): Promise<AxiosResponse> => {
-    try {
-      const response = await axios.post(
-        `http://localhost:8080/course?document_id=${documentId}&comment=${comment}`);
-      return response;
-    } catch (error) {
-      throw error;
-    }
-}
+  documentId: number,
+  comment: string
+): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.post(
+      `http://localhost:8080/comment?document_id=${documentId}&comment=${comment}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const addCourseDetails = async (
   courses: any
@@ -43,7 +57,14 @@ export const addCourseDetails = async (
   try {
     const response = await axios.post(
       `http://localhost:8080/course`,
-      { courses } 
+      {
+        courses,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
+      }
     );
     return response;
   } catch (error) {
@@ -53,9 +74,9 @@ export const addCourseDetails = async (
 
 export const getCourses = async (): Promise<AxiosResponse> => {
   try {
-    const response = await axios.get('http://localhost:8080/courses');
-    return response
+    const response = await axios.get("http://localhost:8080/courses");
+    return response;
   } catch (error) {
     throw error;
   }
-}
+};

@@ -23,7 +23,8 @@ const endpointMapping: Record<string, string> = {
 };
 
 export const embedYoutube = async (
-  data: YouTubeRequestBody, abortSignal: AbortSignal
+  data: YouTubeRequestBody,
+  abortSignal: AbortSignal
 ): Promise<AxiosResponse> => {
   try {
     const response = await axios.post(
@@ -31,8 +32,8 @@ export const embedYoutube = async (
       data,
       {
         headers: {
-          "Authorization": `Bearer ${localStorage.access_token}`
-        }
+          Authorization: `Bearer ${localStorage.access_token}`,
+        },
       }
     );
     return response;
@@ -42,8 +43,10 @@ export const embedYoutube = async (
   }
 };
 
-export const embedFile = async (file: File, abortSignal: AbortSignal
-  ): Promise<AxiosResponse> => {
+export const embedFile = async (
+  file: File,
+  abortSignal: AbortSignal
+): Promise<AxiosResponse> => {
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -58,9 +61,9 @@ export const embedFile = async (file: File, abortSignal: AbortSignal
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${localStorage.access_token}`
+            Authorization: `Bearer ${localStorage.access_token}`,
           },
-          signal: abortSignal, 
+          signal: abortSignal,
         }
       );
       return response;
