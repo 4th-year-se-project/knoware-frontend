@@ -67,17 +67,21 @@ const Home = () => {
     const token = urlParams.get("token");
     const username = urlParams.get("name");
 
+    const stored_token = localStorage.getItem("aceess_token");
+    const stored_username = localStorage.getItem("token");
+
     if (token && username) {
       localStorage.setItem("access_token", token);
       localStorage.setItem("name", username);
 
       navigate("/");
       getResources();
-    }
-    if (
-      !localStorage.getItem("access_token") &&
-      !localStorage.getItem("name")
+    } else if (
+      localStorage.getItem("access_token") &&
+      localStorage.getItem("name")
     ) {
+      getResources();
+    } else {
       navigate("/login");
     }
   }, []);

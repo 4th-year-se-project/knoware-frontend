@@ -38,10 +38,8 @@ function DefaultResource(props: Props) {
             Recommended
           </Badge>
         )}
-        <Title order={4} className="w-2/3 whitespace-normal">
-          {props.title.length > 40
-            ? props.title.substring(0, 20) + "..."
-            : props.title}
+        <Title order={4} className="w-auto whitespace-normal overflow-hidden text-ellipsis">
+          {props.title}
         </Title>
         <img
           className={`${
