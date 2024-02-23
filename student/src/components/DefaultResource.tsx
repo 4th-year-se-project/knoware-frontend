@@ -50,7 +50,7 @@ function DefaultResource(props: Props) {
           key={props.key}
           src={props.image}
           width={400}
-          alt={`image-${props.key}`}
+          alt={`${props.key}`}
         />
       </div>
     </Card>
