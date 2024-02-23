@@ -132,6 +132,7 @@ function ResourceModal(props: Props) {
     if (props.type === "pdf") {
       openPdfInNewWindow();
     } else if (props.type === "youtube") {
+      console.log(props.link)
       window.open(props.link, "_blank");
     }
   };

@@ -3,7 +3,7 @@ import HeaderBar from "../components/HeaderBar";
 import Masonry from "react-responsive-masonry";
 import AudioResource from "../components/AudioResource";
 import DefaultResource from "../components/DefaultResource";
-import { Box, Loader, Stack } from "@mantine/core";
+import { Box, Loader } from "@mantine/core";
 import {
   IconFileText,
   IconCircleCheckFilled,
@@ -33,7 +33,6 @@ import {
   getRecommendedResources,
 } from "../services/resourceAPI";
 import { search, getSearchRecommendation } from "../services/searchAPI";
-import RecommendedResource from "../components/RecommendedResource";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -60,14 +59,8 @@ const Home = () => {
   const fileStatusList: FileStatus[] = useSelector(
     (state: RootState) => state.fileStatus.fileStatusList
   );
-
   const [isUploadBoxOpened, setIsUploadBoxOpened] = useState<Boolean>(false);
   const [isCloseButtonEnabled, setIsCloseButtonEnabled] = useState(false);
-  // const [uploadList, setUploadList] = useState<any[]>([]);
-
-  // const handleUploadList = (list: any) => {
-  //   setUploadList(list);
-  // };
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -87,7 +80,7 @@ const Home = () => {
     ) {
       navigate("/login");
     }
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     if (fileStatusList.length > 0) {
@@ -158,10 +151,6 @@ const Home = () => {
     getDefaultRecommendation();
   }, [resources]);
 
-  useEffect(() => {
-    getResources();
-  }, []);
-
   const handleResourceClick = (resourceType: string, resource: any) => {
     //console.log(resource);
     setActiveResource({
@@ -176,7 +165,7 @@ const Home = () => {
       label: resource.label,
       id: resource.doc_id,
       type: resource.type,
-      link: resource.link
+      link: resource.link,
     });
     setModalContent(resourceType);
     open();
@@ -318,7 +307,7 @@ const Home = () => {
           />
         </div>
       )}
-      <div className="flex justify-between mr-40 mt-10">
+      <div className="flex justify-between mr-40 mt-10 mb-6">
         <Title order={1} className="px-40">
           {searchQuery ? `Results for "${searchQuery}"` : "Your Resources"}
         </Title>
@@ -376,7 +365,7 @@ const Home = () => {
           })}
         </Masonry>
       ) : (
-        <div className="text-center mx-auto w-2/5 mt-8">
+        <div className="text-center mx-auto w-1/3 my-auto">
           <img src="no-results.jpg" alt="No results found" />
           <p className="text-lg">No results found</p>
         </div>
