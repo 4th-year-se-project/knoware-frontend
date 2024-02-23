@@ -140,8 +140,8 @@ function ResourceModal(props: Props) {
   return (
     <div className="w w-full pr-2">
       <>
-        <div className="flex justify-between place-items-end">
-          <Title order={2}>{props.name}</Title>
+        <div className="flex justify-between place-items-center">
+          <Title order={2} className="whitespace-normal text-ellipsis overflow-hidden">{props.name}</Title>
           <div className="flex justify-between">
             {isEditMode ? (
               <>
