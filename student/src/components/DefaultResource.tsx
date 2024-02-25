@@ -1,5 +1,6 @@
-import { Badge, Title, Card } from "@mantine/core";
-import React from "react";
+import { Badge, Title, Card, Menu, Button } from "@mantine/core";
+import { IconTrash, IconEye, IconEyeOff, IconDotsVertical } from "@tabler/icons-react";
+import React, { useState } from "react";
 
 type Props = {
   title: string;
@@ -16,32 +17,55 @@ const badgeStyle = {
 };
 
 function DefaultResource(props: Props) {
+  const [hideResource, setHideResource] = useState(true);
+
+  const handleHideResource = () => {
+    hideResource ? setHideResource(false) : setHideResource(true)
+  }
   return (
     <Card
       shadow="sm"
-      style={{ padding: 0 }}
+      style={{ padding: 8 }}
       radius="md"
       withBorder
-      className="m-2"
+      className="m-2 transition-transform transform hover:scale-105 duration-300 ease-in-out "
     >
-      {" "}
-      <div
-        onClick={props.onClick}
-        className="m-6 rounded-md transition-transform transform hover:scale-105 duration-300 ease-in-out "
-      >
+      <div>
         {props.isRecommended && (
           <Badge
             color="purple"
-            className="absolute right-0 z-10 bottom-0 mr-0 roun"
+            className="absolute right-0 z-10 bottom-2 right-2 mr-0 roun"
             style={badgeStyle}
           >
             Recommended
           </Badge>
         )}
-        <Title order={4} className="w-auto whitespace-normal overflow-hidden text-ellipsis">
-          {props.title}
-        </Title>
+        <div className="flex flex-row justify-between">
+          <Title
+            order={4}
+            className="w-auto whitespace-normal overflow-hidden text-ellipsis"
+          >
+            {props.title}
+          </Title>
+          {!props.isRecommended && (
+            <Menu shadow="md" width={200}>
+              <Menu.Target>
+                <IconDotsVertical size={16} cursor={"pointer"}/>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item icon={hideResource ? <IconEye size={14}/> : <IconEyeOff size={14}/>} onClick={handleHideResource}>
+                  Hide from others
+                </Menu.Item>
+                <Menu.Item icon={<IconTrash size={14} />}>
+                  Delete
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
+        </div>
         <img
+          onClick={props.onClick}
           className={`${
             props.isRecommended ? "border-4 border-purple-500" : ""
           }`}
