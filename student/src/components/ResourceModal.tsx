@@ -37,6 +37,7 @@ type Props = {
   id: number;
   type: string;
   link: string;
+  isRecommended: boolean;
 };
 
 type Comment = {
@@ -142,6 +143,7 @@ function ResourceModal(props: Props) {
       <>
         <div className="flex justify-between place-items-center">
           <Title order={2} className="whitespace-normal text-ellipsis overflow-hidden">{props.name}</Title>
+          {!props.isRecommended && (
           <div className="flex justify-between">
             {isEditMode ? (
               <>
@@ -220,8 +222,8 @@ function ResourceModal(props: Props) {
                 </div>
               </>
             )}
-          </div>
-        </div>{" "}
+          </div>)}
+        </div>
         <Breadcrumbs separator="→" mt="xs" mb="lg">
           <Text color="indigo.7">{props.course}</Text>
           <Text color="indigo.7">{props.topic}</Text>

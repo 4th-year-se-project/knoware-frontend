@@ -54,6 +54,7 @@ const Home = () => {
     content: "",
     label: "",
     id: "",
+    isRecommended: "",
   });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const fileStatusList: FileStatus[] = useSelector(
@@ -164,6 +165,7 @@ const Home = () => {
       id: resource.doc_id,
       type: resource.type,
       link: resource.link,
+      isRecommended: resource.isRecommended,
     });
     setModalContent(resourceType);
     open();
@@ -229,6 +231,7 @@ const Home = () => {
           type={activeResource.type}
           link={activeResource.link}
           onClose={closeModal}
+          isRecommended={activeResource.isRecommended}
         />
       );
     }
