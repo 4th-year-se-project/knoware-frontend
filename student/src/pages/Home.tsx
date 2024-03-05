@@ -94,7 +94,7 @@ const Home = () => {
           fileStatus.status === "error" ||
           fileStatus.status === "success"
       ) && fileStatusList.length > 0;
-
+    getResources();
     setIsCloseButtonEnabled(allFinished);
   }, [fileStatusList]);
 
